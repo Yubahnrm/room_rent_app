@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 
 export default function AddTenant() {
+  const [rooms, setRooms] = useState([])
+  const [buildings, setBuildings] = useState([])
   const [form, setForm] = useState({
     room_id: '',
     full_name: '',
@@ -24,40 +26,67 @@ export default function AddTenant() {
 
   const [message, setMessage] = useState('')
 
+  useEffect(() => {
+    fetchRooms()
+  }, [])
+
+  async function fetchRooms() {
+    const { data: b } = await supabase.from('buildings').select('*')
+    const { data: r } = await supabase.from('rooms').select('*').eq('is_occupied', false)
+    setBuildings(b || [])
+    setRooms(r || [])
+  }
+
+  function getBuildingName(building_id) {
+    const b = buildings.find(b => b.id === building_id)
+    return b ? b.name : ''
+  }
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   async function handleSubmit() {
     if (!form.full_name || !form.room_id) {
-      setMessage('Please fill full name and room number at minimum.')
+      setMessage('Please fill full name and select a room.')
       return
     }
 
-    const { error } = await supabase.from('tenants').insert([form])
+    const { error } = await supabase.from('tenants').insert([{
+      ...form,
+      room_id: Number(form.room_id),
+    }])
 
     if (error) {
       setMessage('Error: ' + error.message)
-    } else {
-      setMessage('Tenant saved successfully!')
-      setForm({
-        room_id: '',
-        full_name: '',
-        father_name: '',
-        grandfather_name: '',
-        room_owner_name: 'Yubaraj',
-        phone: '',
-        email: '',
-        profession: '',
-        citizenship_id: '',
-        temporary_address: '',
-        permanent_address: '',
-        number_of_people: 1,
-        lease_start: '',
-        lease_end: '',
-        advance_amount: 0,
-      })
+      return
     }
+
+    // Mark room as occupied
+    await supabase
+      .from('rooms')
+      .update({ is_occupied: true })
+      .eq('id', Number(form.room_id))
+
+    setMessage('Tenant saved successfully!')
+    setForm({
+      room_id: '',
+      full_name: '',
+      father_name: '',
+      grandfather_name: '',
+      room_owner_name: 'Yubaraj',
+      phone: '',
+      email: '',
+      profession: '',
+      citizenship_id: '',
+      temporary_address: '',
+      permanent_address: '',
+      number_of_people: 1,
+      lease_start: '',
+      lease_end: '',
+      advance_amount: 0,
+    })
+    fetchRooms()
   }
 
   const input = {
@@ -68,6 +97,7 @@ export default function AddTenant() {
     borderRadius: '6px',
     border: '1px solid #ccc',
     fontSize: '15px',
+    boxSizing: 'border-box',
   }
 
   const label = {
@@ -86,7 +116,8 @@ export default function AddTenant() {
 
   return (
     <main style={{ padding: '2rem', maxWidth: '700px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <h1>🏠 Add New Tenant</h1>
+      <a href="/" style={{ color: '#0070f3' }}>← Back to Dashboard</a>
+      <h1 style={{ marginTop: '1rem' }}>🏠 Add New Tenant</h1>
       <p style={{ color: 'gray' }}>Fill all details carefully. All info can be edited later.</p>
 
       {/* Personal Info */}
@@ -130,8 +161,15 @@ export default function AddTenant() {
       <div style={section}>
         <h2 style={{ marginTop: 0 }}>Room and Lease Information</h2>
 
-        <label style={label}>Room ID (कोठा नम्बर) *</label>
-        <input style={input} name="room_id" value={form.room_id} onChange={handleChange} placeholder="e.g. 1 or 2 or 3" />
+        <label style={label}>Select Room (कोठा छान्नुहोस्) *</label>
+        <select style={input} name="room_id" value={form.room_id} onChange={handleChange}>
+          <option value="">-- Select a vacant room --</option>
+          {rooms.map(room => (
+            <option key={room.id} value={room.id}>
+              {getBuildingName(room.building_id)} — Room {room.room_number} — Rs.{room.rent_amount}/month
+            </option>
+          ))}
+        </select>
 
         <label style={label}>Room Owner Name (घरधनीको नाम)</label>
         <input style={input} name="room_owner_name" value={form.room_owner_name} onChange={handleChange} />
@@ -149,7 +187,6 @@ export default function AddTenant() {
         <input style={input} type="number" name="advance_amount" value={form.advance_amount} onChange={handleChange} min="0" />
       </div>
 
-      {/* Submit */}
       {message && (
         <p style={{
           padding: '10px',
@@ -165,7 +202,7 @@ export default function AddTenant() {
       <button
         onClick={handleSubmit}
         style={{
-          background: '#0070f3',
+          background: '#1a1a2e',
           color: 'white',
           padding: '12px 32px',
           border: 'none',
