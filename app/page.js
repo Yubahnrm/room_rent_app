@@ -13,7 +13,10 @@ export default function Home() {
   useEffect(() => {
     fetchData()
   }, [])
-
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    window.location.href = '/login'
+  }
   async function fetchData() {
     const { data: b } = await supabase.from('buildings').select('*')
     const { data: r } = await supabase.from('rooms').select('*')
@@ -40,6 +43,7 @@ export default function Home() {
         <Link href="/tenants/list" style={{ color: 'white', textDecoration: 'none', padding: '8px 16px', borderRadius: '6px', background: 'rgba(255,255,255,0.2)', fontWeight: 'bold' }}>👥 Tenant List</Link>
         <Link href="/billing" style={{ color: 'white', textDecoration: 'none', padding: '8px 16px', borderRadius: '6px', background: 'rgba(255,255,255,0.2)', fontWeight: 'bold' }}>🧾 Billing</Link>
         <Link href="/payments" style={{ color: 'white', textDecoration: 'none', padding: '8px 16px', borderRadius: '6px', background: 'rgba(255,255,255,0.2)', fontWeight: 'bold' }}>💰 Payments</Link>
+        <button onClick={handleLogout} style={{ color: 'white', padding: '8px 16px', borderRadius: '6px', background: 'rgba(255,0,0,0.3)', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>🚪 Logout</button>
       </div>
 
       <h1>🏠 Rental Management App</h1>
