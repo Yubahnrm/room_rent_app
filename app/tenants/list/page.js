@@ -53,9 +53,20 @@ export default function TenantList() {
     }
   }
 
-  async function deactivateTenant(id) {
+async function deactivateTenant(id) {
     if (!confirm('Are you sure you want to remove this tenant?')) return
+    
+    // Get tenant info first
+    const tenant = tenants.find(t => t.id === id)
+    
+    // Deactivate tenant
     await supabase.from('tenants').update({ is_active: false }).eq('id', id)
+    
+    // Mark room as vacant
+    if (tenant?.room_id) {
+      await supabase.from('rooms').update({ is_occupied: false }).eq('id', tenant.room_id)
+    }
+    
     fetchTenants()
   }
 
