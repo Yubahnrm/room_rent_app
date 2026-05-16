@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useLang } from './providers'
 
 export default function Home() {
-  const { t, toggleLanguage } = useLang()
+  const { t, toggleLanguage, lang } = useLang()
   const [buildings, setBuildings] = useState([])
   const [rooms, setRooms] = useState([])
   const [tenants, setTenants] = useState([])
@@ -67,15 +67,18 @@ export default function Home() {
     <main style={{ minHeight: '100vh', background: '#f4f6fb', fontFamily: 'sans-serif' }}>
 
       {/* Navigation */}
-      <div style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '1rem 2rem', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
-        <span style={{ color: 'white', fontWeight: 'bold', fontSize: '18px', marginRight: '0.5rem' }}>🏠 RentApp</span>
-        <Link href="/" style={navBtn}>{t.dashboard}</Link>
-        <Link href="/tenants" style={navBtn}>{t.addTenant}</Link>
-        <Link href="/tenants/list" style={navBtn}>{t.tenants}</Link>
-        <Link href="/billing" style={navBtn}>{t.billing}</Link>
-        <Link href="/payments" style={navBtn}>{t.payments}</Link>
-        <button onClick={toggleLanguage} style={{ ...navBtn, background: 'rgba(201,168,76,0.3)', border: '1px solid rgba(201,168,76,0.5)' }}>{t.language}</button>
-        <button onClick={handleLogout} style={{ ...navBtn, background: 'rgba(255,60,60,0.3)', border: '1px solid rgba(255,60,60,0.4)', marginLeft: 'auto' }}>{t.logout}</button>
+     <div style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '0.8rem 1.2rem', display: 'flex', gap: '8px', flexWrap: 'nowrap', alignItems: 'center', boxShadow: '0 2px 12px rgba(0,0,0,0.3)', overflowX: 'auto' }}>
+        <span style={{ color: 'white', fontWeight: 'bold', fontSize: '16px', marginRight: '6px', whiteSpace: 'nowrap' }}>🏠 RentApp</span>
+        <Link href="/" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>{t.dashboard}</Link>
+        <Link href="/tenants" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>{t.addTenant}</Link>
+        <Link href="/tenants/list" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>{t.tenants}</Link>
+        <Link href="/billing" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>{t.billing}</Link>
+        <Link href="/payments" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>{t.payments}</Link>
+        <Link href="/summary" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>👁️ {lang === 'np' ? 'सारांश' : 'Summary'}</Link>
+        <Link href="/printbill" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>🖨️ {lang === 'np' ? 'बिल' : 'Print Bill'}</Link>
+        <Link href="/govreport" style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap' }}>📋 {lang === 'np' ? 'रिपोर्ट' : 'Gov Report'}</Link>
+        <button onClick={toggleLanguage} style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap', background: 'rgba(201,168,76,0.3)', border: '1px solid rgba(201,168,76,0.5)' }}>{t.language}</button>
+        <button onClick={handleLogout} style={{ ...navBtn, fontSize: '13px', padding: '8px 14px', whiteSpace: 'nowrap', background: 'rgba(255,60,60,0.3)', border: '1px solid rgba(255,60,60,0.4)', marginLeft: 'auto' }}>{t.logout}</button>
       </div>
 
       <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>

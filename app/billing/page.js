@@ -20,6 +20,7 @@ export default function Billing() {
     water_charge: 0,
     dustbin_charge: 100,
     damage_charge: 0,
+    internet_charge: 0,
     advance_used: 0,
     paid_amount: 0,
     payment_method: 'Cash',
@@ -55,12 +56,13 @@ export default function Billing() {
 
   // Calculate all amounts
   const electricityCharge = bill.electricity_units * bill.electricity_rate
-  const totalBill = 
+const totalBill = 
     Number(bill.rent_amount) + 
     Number(electricityCharge) + 
     Number(bill.water_charge) + 
     Number(bill.dustbin_charge) + 
-    Number(bill.damage_charge)
+    Number(bill.damage_charge) +
+    Number(bill.internet_charge)
   const balance = totalBill - Number(bill.advance_used) - Number(bill.paid_amount)
 
   async function handleSaveBill() {
@@ -81,6 +83,7 @@ export default function Billing() {
       water_charge: Number(bill.water_charge),
       dustbin_charge: Number(bill.dustbin_charge),
       damage_charge: Number(bill.damage_charge),
+      internet_charge: Number(bill.internet_charge),
       total_bill: Number(totalBill),
       advance_used: Number(bill.advance_used),
       paid_amount: Number(bill.paid_amount),
@@ -199,6 +202,8 @@ export default function Billing() {
 
             <label style={label}>Damage Charge — Rs. (क्षति शुल्क)</label>
             <input style={input} type="number" name="damage_charge" value={bill.damage_charge} onChange={handleBillChange} placeholder="0 if no damage" />
+            <label style={label}>Internet Charge — Rs. (इन्टरनेट शुल्क)</label>
+            <input style={input} type="number" name="internet_charge" value={bill.internet_charge} onChange={handleBillChange} placeholder="e.g. 500" />
           </div>
 
           {/* Bill Summary */}
@@ -209,6 +214,7 @@ export default function Billing() {
             <div style={row}><span>Water</span><span>Rs. {bill.water_charge}</span></div>
             <div style={row}><span>Dustbin</span><span>Rs. {bill.dustbin_charge}</span></div>
             <div style={row}><span>Damage</span><span>Rs. {bill.damage_charge}</span></div>
+            <div style={row}><span>Internet (इन्टरनेट)</span><span>Rs. {bill.internet_charge}</span></div>
             <div style={{ ...row, fontWeight: 'bold', fontSize: '17px', borderBottom: 'none' }}>
               <span>Total Bill</span><span>Rs. {totalBill}</span>
             </div>
