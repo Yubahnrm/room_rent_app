@@ -67,22 +67,19 @@ export default function NoticeBoard() {
   return (
     <main style={{ minHeight: '100vh', background: '#f4f6fb', fontFamily: 'sans-serif' }}>
 
-      <div style={{ background: '#1a1a2e', padding: '1.5rem', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', margin: 0, fontSize: '22px' }}>📋 Notice Board — HNRM Family</h1>
-        <p style={{ color: '#aaa', margin: '4px 0 0', fontSize: '13px' }}>Important information for all tenants</p>
-      </div>
-
       <div style={{ padding: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
 
-        {/* Big Welcome Message */}
+        
+
+        {/* Welcome Message */}
         <div style={{ background: 'linear-gradient(135deg, #2c1810, #1a1a2e)', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center', border: '2px solid #c9a84c' }}>
-          <div style={{ fontSize: '32px', color: '#c9a84c', marginBottom: '8px' }}>ॐ</div>
-          <div style={{ color: '#c9a84c', fontSize: '20px', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '8px' }}>अतिथि देवो भव</div>
-          <p style={{ color: '#e8d5a3', fontSize: '14px', lineHeight: '1.8', margin: '0 0 10px' }}>
+          <div style={{ fontSize: '28px', color: '#c9a84c', marginBottom: '8px' }}>ॐ</div>
+          <div style={{ color: '#c9a84c', fontSize: '18px', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '8px' }}>अतिथि देवो भव</div>
+          <p style={{ color: '#e8d5a3', fontSize: '13px', lineHeight: '1.8', margin: '0 0 10px' }}>
             Welcome to HNRM Family. We are happy to have you as our guest.
           </p>
           <div style={{ background: 'rgba(201,168,76,0.15)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(201,168,76,0.3)' }}>
-            <p style={{ color: '#c9a84c', fontSize: '15px', fontWeight: '700', margin: '0 0 8px', fontStyle: 'italic' }}>
+            <p style={{ color: '#c9a84c', fontSize: '14px', fontWeight: '700', margin: '0 0 8px', fontStyle: 'italic' }}>
               "Your behaviour is your identity."
             </p>
             <p style={{ color: '#e8d5a3', fontSize: '13px', margin: '0 0 8px', lineHeight: '1.7' }}>
@@ -96,12 +93,8 @@ export default function NoticeBoard() {
 
         {/* Monthly Charges */}
         <div style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <h2 style={{ margin: '0 0 1rem', color: '#1a1a2e', fontSize: '17px', borderBottom: '2px solid #f0f0f0', paddingBottom: '8px' }}>
-            💰 Monthly Charges (मासिक शुल्क)
-          </h2>
-          <p style={{ color: '#888', fontSize: '12px', marginBottom: '1rem', marginTop: '-0.5rem' }}>
-            Charges may change — always confirm with owner
-          </p>
+          <h2 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '16px' }}>💰 Monthly Charges (मासिक शुल्क)</h2>
+          <p style={{ color: '#888', fontSize: '12px', marginBottom: '1rem' }}>Charges may change — always confirm with owner</p>
           {charges.map(notice => (
             <div key={notice.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', marginBottom: '8px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #eee' }}>
               <span style={{ fontWeight: '600', color: '#333', fontSize: '14px' }}>{notice.title}</span>
@@ -113,9 +106,7 @@ export default function NoticeBoard() {
 
         {/* House Rules */}
         <div style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <h2 style={{ margin: '0 0 1rem', color: '#1a1a2e', fontSize: '17px', borderBottom: '2px solid #f0f0f0', paddingBottom: '8px' }}>
-            📜 House Rules (घरका नियमहरू)
-          </h2>
+          <h2 style={{ margin: '0 0 1rem', color: '#1a1a2e', fontSize: '16px' }}>📜 House Rules (घरका नियमहरू)</h2>
           {rules.map((notice, index) => (
             <div key={notice.id} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '10px 12px', marginBottom: '8px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #eee' }}>
               <div style={{ background: '#1a1a2e', color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', flexShrink: 0 }}>
@@ -133,9 +124,7 @@ export default function NoticeBoard() {
         {/* General Notices */}
         {general.length > 0 && (
           <div style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <h2 style={{ margin: '0 0 1rem', color: '#1a1a2e', fontSize: '17px', borderBottom: '2px solid #f0f0f0', paddingBottom: '8px' }}>
-              📢 General Notices
-            </h2>
+            <h2 style={{ margin: '0 0 1rem', color: '#1a1a2e', fontSize: '16px' }}>📢 General Notices</h2>
             {general.map(notice => (
               <div key={notice.id} style={{ padding: '10px 12px', marginBottom: '8px', background: '#fff8e1', borderRadius: '8px', border: '1px solid #ffd54f' }}>
                 <div style={{ fontWeight: '700', color: '#333', fontSize: '14px' }}>{notice.title}</div>
@@ -147,21 +136,19 @@ export default function NoticeBoard() {
 
         {/* Complaint Form */}
         <div style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '2px solid #eee' }}>
-          <h2 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '17px' }}>📝 Submit a Complaint or Request</h2>
+          <h2 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '16px' }}>📝 Submit a Complaint or Request</h2>
           <p style={{ color: '#888', fontSize: '13px', marginBottom: '1rem', lineHeight: '1.6' }}>
-            If you have any problem — maintenance issue, neighbour dispute, water, electricity, or anything — please write here calmly before it becomes a bigger problem. We will respond as soon as possible.
+            If you have any problem — please write here calmly before it becomes bigger. We will respond as soon as possible.
           </p>
           <p style={{ color: '#888', fontSize: '13px', marginBottom: '1rem' }}>
-            कुनै पनि समस्या भएमा — कृपया यहाँ लेख्नुहोस्। हामी सकेसम्म चाँडो जवाफ दिनेछौं।
+            कुनै पनि समस्या भएमा — कृपया यहाँ शान्तरूपमा लेख्नुहोस्। हामी चाँडो जवाफ दिनेछौं।
           </p>
 
           {submitted ? (
             <div style={{ textAlign: 'center', padding: '2rem', background: '#e5ffe5', borderRadius: '10px' }}>
               <div style={{ fontSize: '40px', marginBottom: '8px' }}>✅</div>
               <h3 style={{ color: '#060', margin: '0 0 8px' }}>Submitted Successfully!</h3>
-              <p style={{ color: '#555', fontSize: '13px', margin: 0 }}>
-                Your complaint has been sent to the owner. Thank you for letting us know calmly.
-              </p>
+              <p style={{ color: '#555', fontSize: '13px', margin: 0 }}>Your complaint has been sent to the owner. Thank you for letting us know calmly.</p>
               <button onClick={() => { setSubmitted(false); setComplaint({ tenant_name: '', room_number: '', phone: '', complaint_type: 'General', description: '' }) }} style={{ marginTop: '1rem', background: '#1a1a2e', color: 'white', padding: '8px 20px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
                 Submit Another
               </button>
@@ -195,7 +182,7 @@ export default function NoticeBoard() {
                 name="description"
                 value={complaint.description}
                 onChange={handleChange}
-                placeholder="Please describe your problem calmly and clearly... / कृपया आफ्नो समस्या शान्तरूपमा र स्पष्टरूपमा लेख्नुहोस्..."
+                placeholder="Please describe your problem calmly and clearly..."
                 rows={5}
                 style={{ ...input, resize: 'vertical', lineHeight: '1.6' }}
               />
@@ -217,7 +204,7 @@ export default function NoticeBoard() {
         </div>
 
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#aaa', paddingBottom: '2rem' }}>
-          <div style={{ color: '#c9a84c', fontSize: '18px', marginBottom: '4px' }}>ॐ अतिथि देवो भव 🙏</div>
+          <div style={{ color: '#c9a84c', fontSize: '16px', marginBottom: '4px' }}>ॐ अतिथि देवो भव</div>
           <div>HNRM Family — Human Nature Reality Movement</div>
           <a href="https://www.yubarajtimilsina.com.np" target="_blank" rel="noopener noreferrer" style={{ color: '#c9a84c' }}>www.yubarajtimilsina.com.np</a>
         </div>

@@ -93,12 +93,8 @@ const navBtn = {
           <Link href="/moveout" style={navBtn}>🚪 {lang === 'np' ? 'सर्नु' : 'Move Out'}</Link>
           <Link href="/history" style={navBtn}>📚 {lang === 'np' ? 'इतिहास' : 'History'}</Link>
           <button onClick={toggleLanguage} style={{ ...navBtn, background: 'rgba(201,168,76,0.4)', border: '1px solid rgba(201,168,76,0.6)' }}>{t.language}</button>
-          <Link href="/noticeboard" style={navBtn}>📋 {lang === 'np' ? 'सूचना' : 'Notices'}</Link>
-        <Link href="/managenotices" style={navBtn}>⚙️ {lang === 'np' ? 'सूचना व्यवस्था' : 'Manage Notices'}</Link>
-        <Link href="/noticeboard" style={navBtn}>📋 {lang === 'np' ? 'सूचना' : 'Notices'}</Link>
-        <Link href="/managenotices" style={navBtn}>⚙️ {lang === 'np' ? 'सूचना व्यवस्था' : 'Manage Notices'}</Link>
-        <Link href="/noticeboard" style={navBtn}>📋 {lang === 'np' ? 'सूचना' : 'Notices'}</Link>
-        <Link href="/managenotices" style={navBtn}>⚙️ {lang === 'np' ? 'सूचना व्यवस्था' : 'Manage Notices'}</Link>
+          
+        <Link href="/managenotices" style={navBtn}>📋 Notices</Link>
         <Link href="/managerooms" style={navBtn}>📸 {lang === 'np' ? 'फोटो' : 'Room Photos'}</Link>
         <button onClick={handleLogout} style={{ ...navBtn, background: 'rgba(255,60,60,0.3)', border: '1px solid rgba(255,60,60,0.4)' }}>{t.logout}</button>
         </div>

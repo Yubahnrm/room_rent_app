@@ -117,6 +117,9 @@ export default function Register() {
 <div style={{ background: '#1a1a2e', padding: '1rem 1.5rem', textAlign: 'center' }}>
         <div style={{ color: 'white', fontSize: '18px', fontWeight: '700' }}>🏠 HNRM Family — Tenant Registration</div>
         <div style={{ color: '#aaa', fontSize: '12px', marginTop: '4px' }}>Please fill your details carefully — कृपया आफ्नो विवरण ध्यानपूर्वक भर्नुहोस्</div>
+        <a href="/noticeboard" style={{ display: 'inline-block', marginTop: '10px', color: '#c9a84c', fontSize: '13px', border: '1px solid #c9a84c', padding: '4px 16px', borderRadius: '20px', textDecoration: 'none' }}>
+          📋 Read House Rules and Charges First
+        </a>
       </div>
 
       <div style={{ padding: '1.5rem', maxWidth: '600px', margin: '0 auto' }}>

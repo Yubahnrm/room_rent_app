@@ -90,11 +90,9 @@ export default function RoomsPage() {
                   <p style={{ color: '#555', fontSize: '13px', marginBottom: '8px', lineHeight: '1.5' }}>{room.description}</p>
                 )}
 
-                
-
                 {!room.is_occupied && (
-                  <a href="/register" style={{ display: 'block', marginTop: '10px', background: '#1a1a2e', color: 'white', padding: '8px', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '13px', fontWeight: '600' }}>
-                    Register Interest
+                  <a href="/noticeboard" style={{ display: 'block', marginTop: '10px', background: '#1a1a2e', color: 'white', padding: '8px', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '13px', fontWeight: '600' }}>
+                    📋 Read Rules then Register
                   </a>
                 )}
 
