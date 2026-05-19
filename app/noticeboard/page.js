@@ -72,23 +72,16 @@ export default function NoticeBoard() {
         
 
         {/* Welcome Message */}
-        <div style={{ background: 'linear-gradient(135deg, #2c1810, #1a1a2e)', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center', border: '2px solid #c9a84c' }}>
-          <div style={{ fontSize: '28px', color: '#c9a84c', marginBottom: '8px' }}>ॐ</div>
-          <div style={{ color: '#c9a84c', fontSize: '18px', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '8px' }}>अतिथि देवो भव</div>
-          <p style={{ color: '#e8d5a3', fontSize: '13px', lineHeight: '1.8', margin: '0 0 10px' }}>
-            Welcome to HNRM Family. We are happy to have you as our guest.
+        <div style={{ background: 'rgba(201,168,76,0.1)', borderRadius: '14px', padding: '1.2rem', marginBottom: '1.5rem', border: '1px solid rgba(201,168,76,0.3)', textAlign: 'center' }}>
+          <p style={{ color: '#c9a84c', fontSize: '15px', fontWeight: '700', margin: '0 0 8px', fontStyle: 'italic' }}>
+            "Your behaviour is your identity."
           </p>
-          <div style={{ background: 'rgba(201,168,76,0.15)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(201,168,76,0.3)' }}>
-            <p style={{ color: '#c9a84c', fontSize: '14px', fontWeight: '700', margin: '0 0 8px', fontStyle: 'italic' }}>
-              "Your behaviour is your identity."
-            </p>
-            <p style={{ color: '#e8d5a3', fontSize: '13px', margin: '0 0 8px', lineHeight: '1.7' }}>
-              We love polite, calm and honest guests. We treat every tenant as family — with respect, care and warmth.
-            </p>
-            <p style={{ color: '#ff9999', fontSize: '13px', fontWeight: '600', margin: 0, lineHeight: '1.7' }}>
-              Important: Anyone found violating house rules will be required to vacate the room — with good lessons learned and good wishes from our family.
-            </p>
-          </div>
+          <p style={{ color: '#555', fontSize: '13px', margin: '0 0 8px', lineHeight: '1.7' }}>
+            We love polite, calm and honest guests. We treat every tenant as family — with respect, care and warmth.
+          </p>
+          <p style={{ color: '#e03030', fontSize: '13px', fontWeight: '600', margin: 0, lineHeight: '1.7' }}>
+            Important: Anyone found violating house rules will be required to vacate the room — with good lessons and good wishes from our family.
+          </p>
         </div>
 
         {/* Monthly Charges */}
@@ -201,6 +194,14 @@ export default function NoticeBoard() {
               </button>
             </>
           )}
+        </div>
+
+        <div style={{ background: '#1a1a2e', borderRadius: '14px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+          <h3 style={{ color: 'white', margin: '0 0 8px' }}>Ready to Register?</h3>
+          <p style={{ color: '#aaa', fontSize: '13px', margin: '0 0 1rem' }}>If you have read and understood all house rules and charges, you can now register.</p>
+          <a href="/register" style={{ display: 'inline-block', background: '#c9a84c', color: '#1a1a2e', padding: '12px 32px', borderRadius: '10px', textDecoration: 'none', fontWeight: '700', fontSize: '15px' }}>
+            📝 Proceed to Register
+          </a>
         </div>
 
         <div style={{ textAlign: 'center', fontSize: '12px', color: '#aaa', paddingBottom: '2rem' }}>

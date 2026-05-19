@@ -91,9 +91,14 @@ export default function RoomsPage() {
                 )}
 
                 {!room.is_occupied && (
-                  <a href="/noticeboard" style={{ display: 'block', marginTop: '10px', background: '#1a1a2e', color: 'white', padding: '8px', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '13px', fontWeight: '600' }}>
-                    📋 Read Rules then Register
-                  </a>
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '6px' }}>
+                    <a href="/noticeboard" style={{ flex: 1, display: 'block', background: '#fff8e1', color: '#1a1a2e', padding: '8px', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '12px', fontWeight: '600', border: '1px solid #ffd54f' }}>
+                      📋 House Rules
+                    </a>
+                    <a href="/noticeboard" style={{ flex: 1, display: 'block', background: '#1a1a2e', color: 'white', padding: '8px', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', fontSize: '12px', fontWeight: '600' }}>
+                      📝 Register
+                    </a>
+                  </div>
                 )}
 
                 {room.is_occupied && (
