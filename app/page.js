@@ -220,7 +220,7 @@ const navBtn = {
                         <button onClick={() => setSelectedRoom(null)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#888' }}>✕</button>
                       </div>
                       <div style={{ fontSize: '13px', marginBottom: '8px' }}>
-                        <span style={{ background: '#1a1a2e', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', marginRight: '6px' }}>Rs.{selectedRoom.rent_amount}/month</span>
+                        
                         <span style={{ background: selectedRoom.is_occupied ? '#e03030' : '#22bb66', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '11px' }}>
                           {selectedRoom.is_occupied ? (lang === 'np' ? 'भरिएको' : 'Occupied') : (lang === 'np' ? 'खाली' : 'Vacant')}
                         </span>
