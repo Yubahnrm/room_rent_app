@@ -92,6 +92,8 @@ const navBtn = {
           <Link href="/govreport" style={navBtn}>📋 {lang === 'np' ? 'रिपोर्ट' : 'Gov'}</Link>
           <Link href="/moveout" style={navBtn}>🚪 {lang === 'np' ? 'सर्नु' : 'Move Out'}</Link>
           <Link href="/history" style={navBtn}>📚 {lang === 'np' ? 'इतिहास' : 'History'}</Link>
+        <Link href="/registrations" style={navBtn}>📥 {lang === 'np' ? 'दर्ता' : 'Registrations'}</Link>
+        <Link href="/registrations" style={navBtn}>📥 {lang === 'np' ? 'दर्ता' : 'Registrations'}</Link>
           <button onClick={toggleLanguage} style={{ ...navBtn, background: 'rgba(201,168,76,0.4)', border: '1px solid rgba(201,168,76,0.6)' }}>{t.language}</button>
           
         <Link href="/managenotices" style={navBtn}>📋 {lang === 'np' ? 'सूचना' : 'Notices'}</Link>
