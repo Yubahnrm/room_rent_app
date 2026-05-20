@@ -198,7 +198,7 @@ const navBtn = {
                         <div style={{ fontSize: '10px', color: room.is_occupied ? '#aaa' : '#999', marginTop: '1px' }}>
                           {room.is_occupied ? (lang === 'np' ? 'भरिएको' : 'Occupied') : (lang === 'np' ? 'खाली' : 'Vacant')}
                         </div>
-                        <div style={{ fontSize: '10px', color: room.is_occupied ? '#888' : '#bbb' }}>Rs.{room.rent_amount}</div>
+                        
                         {firstName && <div style={{ fontSize: '9px', color: '#c9a84c', marginTop: '2px', fontWeight: '700' }}>{firstName}</div>}
                         {due > 0 && <div style={{ fontSize: '9px', color: '#ff6b6b', marginTop: '1px' }}>❌ Rs.{due}</div>}
                       </div>
