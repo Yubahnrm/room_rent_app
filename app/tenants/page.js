@@ -11,7 +11,7 @@ export default function AddTenant() {
     full_name: '',
     father_name: '',
     grandfather_name: '',
-    room_owner_name: 'Yubaraj',
+    room_owner_name: '',
     phone: '',
     email: '',
     profession: '',
@@ -90,7 +90,7 @@ export default function AddTenant() {
       full_name: '',
       father_name: '',
       grandfather_name: '',
-      room_owner_name: 'Yubaraj',
+      room_owner_name: '',
       phone: '',
       email: '',
       profession: '',
@@ -251,7 +251,14 @@ export default function AddTenant() {
         </p>
 
         <label style={label}>Room Owner Name (घरधनीको नाम)</label>
-        <input style={input} name="room_owner_name" value={form.room_owner_name} onChange={handleChange} />
+        <select style={input} name="room_owner_name" value={form.room_owner_name} onChange={handleChange}>
+          <option value="">-- Select Owner --</option>
+          <option value="Yubaraj Timilsina">Yubaraj Timilsina (Building A)</option>
+          <option value="Tej Narayan Timilsina">Tej Narayan Timilsina (Building B — handled by Yubaraj)</option>
+        </select>
+        <p style={{ color: '#888', fontSize: '12px', marginTop: '-10px', marginBottom: '12px' }}>
+          Building A → Yubaraj | Building B → Tej Narayan Timilsina (managed by Yubaraj)
+        </p>
 
         <label style={label}>Number of People in Room (कोठामा बस्नेको संख्या)</label>
         <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" />

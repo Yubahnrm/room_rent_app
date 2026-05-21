@@ -63,8 +63,8 @@ Status: ${selected.is_paid ? 'FULLY PAID' : 'PAYMENT DUE'}
 
 Thank you for staying with us.
 Warm regards,
-Yubaraj Timilsina
-HNRM Family
+{tenant.room_owner_name || 'Yubaraj Timilsina'}
+HNRM Family — Managed by Yubaraj Timilsina
 www.yubarajtimilsina.com.np
     `.trim()
 
