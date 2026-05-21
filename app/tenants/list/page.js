@@ -42,6 +42,7 @@ export default function TenantList() {
         permanent_address: editing.permanent_address,
         number_of_people: editing.number_of_people,
         advance_amount: editing.advance_amount,
+        family_members: editing.family_members,
       })
       .eq('id', editing.id)
     if (error) {
@@ -123,6 +124,8 @@ async function deactivateTenant(id) {
               <input style={input} type="number" name="number_of_people" value={editing.number_of_people || 1} onChange={handleEditChange} />
               <label>Advance Amount</label>
               <input style={input} type="number" name="advance_amount" value={editing.advance_amount || 0} onChange={handleEditChange} />
+              <label>Family Members Details</label>
+              <textarea style={{ ...input, resize: 'vertical', minHeight: '80px' }} name="family_members" value={editing.family_members || ''} onChange={handleEditChange} placeholder="1. Name — Relation&#10;2. Name — Relation" />
               <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
                 <button onClick={saveEdit} style={{ background: '#0070f3', color: 'white', padding: '8px 20px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
                   Save Changes
@@ -155,6 +158,12 @@ async function deactivateTenant(id) {
                 <p style={{ margin: '2px 0' }}>📍 Temporary: {tenant.temporary_address || '—'}</p>
                 <p style={{ margin: '2px 0' }}>🏡 Permanent: {tenant.permanent_address || '—'}</p>
                 <p style={{ margin: '2px 0' }}>👥 People in room: {tenant.number_of_people || 1}</p>
+                {tenant.family_members && (
+                  <div style={{ background: '#f4f6fb', borderRadius: '6px', padding: '6px 10px', marginTop: '4px', fontSize: '12px', color: '#555' }}>
+                    <strong>Family Members:</strong><br/>
+                    <span style={{ whiteSpace: 'pre-line' }}>{tenant.family_members}</span>
+                  </div>
+                )}
                 <p style={{ margin: '2px 0' }}>💰 Advance: Rs. {tenant.advance_amount || 0}</p>
               </div>
             </>

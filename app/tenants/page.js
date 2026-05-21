@@ -29,6 +29,7 @@ export default function AddTenant() {
     office_name: '',
     office_contact_person: '',
     office_contact_phone: '',
+    family_members: '',
   })
 
   const [message, setMessage] = useState('')
@@ -108,6 +109,7 @@ export default function AddTenant() {
       office_name: '',
       office_contact_person: '',
       office_contact_phone: '',
+      family_members: '',
     })
     fetchRooms()
   }
@@ -260,8 +262,25 @@ export default function AddTenant() {
           Building A → Yubaraj | Building B → Tej Narayan Timilsina (managed by Yubaraj)
         </p>
 
-        <label style={label}>Number of People in Room (कोठामा बस्नेको संख्या)</label>
-        <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" />
+        <label style={label}>Number of People in Room (कोठामा बस्नेको संख्या) *</label>
+        <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" placeholder="e.g. 4" />
+        <p style={{ color: '#888', fontSize: '12px', marginTop: '-10px', marginBottom: '12px' }}>
+          Total number of people who will live in this room including main tenant
+        </p>
+
+        <label style={label}>Family Members Details (परिवारका सदस्यहरूको विवरण)</label>
+        <p style={{ color: '#888', fontSize: '12px', marginBottom: '6px' }}>
+          Please write name and relation of each person living in the room.<br/>
+          कोठामा बस्ने प्रत्येक व्यक्तिको नाम र नाता लेख्नुस्।<br/>
+          Example: Ram Thapa (Self/आफै), Sita Thapa (Wife/श्रीमती), Hari Thapa (Son/छोरा), Gita Thapa (Daughter/छोरी)
+        </p>
+        <textarea
+          style={{ ...input, resize: 'vertical', lineHeight: '1.8', minHeight: '100px' }}
+          name="family_members"
+          value={form.family_members || ''}
+          onChange={handleChange}
+          placeholder={`1. [Name] — Self / आफै (Head of family)\n2. [Name] — Wife / श्रीमती\n3. [Name] — Son / छोरा\n4. [Name] — Daughter / छोरी\n(add more if needed)`}
+        />
 
         <label style={label}>Lease Start Date (सम्झौता सुरु मिति)</label>
         <input style={input} type="date" name="lease_start" value={form.lease_start} onChange={handleChange} />

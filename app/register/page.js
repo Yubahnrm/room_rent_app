@@ -22,6 +22,7 @@ export default function Register() {
     office_name: '',
     office_contact_person: '',
     office_contact_phone: '',
+    family_members: '',
   })
   const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
@@ -192,8 +193,25 @@ export default function Register() {
               <input style={input} name="temporary_address" value={form.temporary_address} onChange={handleChange} placeholder="e.g. Kathmandu-10, Baneshwor" />
               <label style={label}>Permanent Address (स्थायी ठेगाना)</label>
               <input style={input} name="permanent_address" value={form.permanent_address} onChange={handleChange} placeholder="e.g. Sindhupalchok-5, Melamchi" />
-              <label style={label}>Number of People Moving In</label>
-              <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" />
+              <label style={label}>Number of People Moving In (कोठामा बस्नेको संख्या) *</label>
+              <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" placeholder="e.g. 4" />
+              <p style={{ color: '#888', fontSize: '12px', marginTop: '-10px', marginBottom: '12px' }}>
+                Total number including yourself
+              </p>
+
+              <label style={label}>Family Members Details (परिवारका सदस्यहरूको विवरण)</label>
+              <p style={{ color: '#888', fontSize: '12px', marginBottom: '6px' }}>
+                Please write name and relation of each person.<br/>
+                प्रत्येक व्यक्तिको नाम र नाता लेख्नुस्।<br/>
+                Example / उदाहरण: Ram Thapa (Self/आफै), Sita Thapa (Wife/श्रीमती)
+              </p>
+              <textarea
+                style={{ ...input, resize: 'vertical', lineHeight: '1.8', minHeight: '100px' }}
+                name="family_members"
+                value={form.family_members || ''}
+                onChange={handleChange}
+                placeholder={'1. [Name] — Self / आफै\n2. [Name] — Wife / श्रीमती\n3. [Name] — Son / छोरा\n4. [Name] — Daughter / छोरी'}
+              />
             </div>
 
             <div style={{ ...section, borderColor: '#ffaaaa' }}>
