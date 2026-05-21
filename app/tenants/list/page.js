@@ -1,175 +1,389 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '../../../lib/supabase'
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
 
-export default function TenantList() {
-  const [tenants, setTenants] = useState([])
-  const [editing, setEditing] = useState(null)
+export default function AddTenant() {
+  const [rooms, setRooms] = useState([])
+  const [allRooms, setAllRooms] = useState([])
+  const [buildings, setBuildings] = useState([])
+  const [form, setForm] = useState({
+    room_id: '',
+    full_name: '',
+    father_name: '',
+    grandfather_name: '',
+    house_owner: '',
+    phone: '',
+    email: '',
+    profession: '',
+    citizenship_id: '',
+    temporary_address: '',
+    permanent_address: '',
+    number_of_people: 1,
+    family_members: '',
+    lease_start: '',
+    lease_end: '',
+    advance_amount: '',
+    rent_amount: '',
+    emergency_contact_name: '',
+    emergency_contact_phone: '',
+    emergency_contact_relation: '',
+    office_name: '',
+    office_contact_person: '',
+    office_contact_phone: '',
+  })
+
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    fetchTenants()
+    fetchRooms()
   }, [])
 
-  async function fetchTenants() {
-    const { data } = await supabase.from('tenants').select('*').eq('is_active', true)
-    setTenants(data || [])
+  async function fetchRooms() {
+    const { data: b } = await supabase.from('buildings').select('*')
+    const { data: r } = await supabase.from('rooms').select('*').eq('is_occupied', false)
+    setBuildings(b || [])
+    setAllRooms(r || [])
+    setRooms(r || [])
   }
 
-  function startEdit(tenant) {
-    setEditing({ ...tenant })
-    setMessage('')
+  function handleChange(e) {
+    const updated = { ...form, [e.target.name]: e.target.value }
+
+    // When house owner changes — filter rooms by building
+    if (e.target.name === 'house_owner') {
+      updated.room_id = '' // reset room selection
+      if (e.target.value === 'Yubaraj Timilsina') {
+        // Building A — id 1
+        setRooms(allRooms.filter(r => r.building_id === 1))
+      } else if (e.target.value === 'Krishna Timsena') {
+        // Building B — id 2
+        setRooms(allRooms.filter(r => r.building_id === 2))
+      } else {
+        setRooms(allRooms)
+      }
+    }
+
+    setForm(updated)
   }
 
-  function handleEditChange(e) {
-    setEditing({ ...editing, [e.target.name]: e.target.value })
+  function getRoomType(type) {
+    if (type === 'shop') return 'Shop'
+    if (type === 'flat') return 'Flat'
+    return 'Room'
   }
 
-  async function saveEdit() {
-    const { error } = await supabase
-      .from('tenants')
-      .update({
-        full_name: editing.full_name,
-        father_name: editing.father_name,
-        grandfather_name: editing.grandfather_name,
-        phone: editing.phone,
-        email: editing.email,
-        profession: editing.profession,
-        citizenship_id: editing.citizenship_id,
-        temporary_address: editing.temporary_address,
-        permanent_address: editing.permanent_address,
-        number_of_people: editing.number_of_people,
-        advance_amount: editing.advance_amount,
-        family_members: editing.family_members,
-      })
-      .eq('id', editing.id)
+  async function handleSubmit() {
+    if (!form.full_name || !form.room_id) {
+      setMessage('Please fill full name and select a room.')
+      return
+    }
+    if (!form.rent_amount) {
+      setMessage('Please enter the agreed rent amount.')
+      return
+    }
+    if (!form.house_owner) {
+      setMessage('Please select the House Owner.')
+      return
+    }
+
+    const { error } = await supabase.from('tenants').insert([{
+      ...form,
+      room_owner_name: form.house_owner,
+      room_id: Number(form.room_id),
+      rent_amount: Number(form.rent_amount),
+      advance_amount: Number(form.advance_amount) || 0,
+      number_of_people: Number(form.number_of_people) || 1,
+    }])
+
     if (error) {
       setMessage('Error: ' + error.message)
-    } else {
-      setMessage('Tenant updated successfully!')
-      setEditing(null)
-      fetchTenants()
+      return
     }
-  }
 
-async function deactivateTenant(id) {
-    if (!confirm('Are you sure you want to remove this tenant?')) return
-    
-    // Get tenant info first
-    const tenant = tenants.find(t => t.id === id)
-    
-    // Deactivate tenant
-    await supabase.from('tenants').update({ is_active: false }).eq('id', id)
-    
-    // Mark room as vacant
-    if (tenant?.room_id) {
-      await supabase.from('rooms').update({ is_occupied: false }).eq('id', tenant.room_id)
-    }
-    
-    fetchTenants()
+    await supabase.from('rooms').update({ is_occupied: true }).eq('id', Number(form.room_id))
+
+    setMessage('Tenant saved successfully!')
+    setForm({
+      room_id: '',
+      full_name: '',
+      father_name: '',
+      grandfather_name: '',
+      house_owner: '',
+      phone: '',
+      email: '',
+      profession: '',
+      citizenship_id: '',
+      temporary_address: '',
+      permanent_address: '',
+      number_of_people: 1,
+      family_members: '',
+      lease_start: '',
+      lease_end: '',
+      advance_amount: '',
+      rent_amount: '',
+      emergency_contact_name: '',
+      emergency_contact_phone: '',
+      emergency_contact_relation: '',
+      office_name: '',
+      office_contact_person: '',
+      office_contact_phone: '',
+    })
+    setRooms(allRooms)
+    fetchRooms()
   }
 
   const input = {
     width: '100%',
-    padding: '8px',
+    padding: '10px',
     marginTop: '4px',
-    marginBottom: '10px',
-    borderRadius: '6px',
+    marginBottom: '14px',
+    borderRadius: '8px',
     border: '1px solid #ccc',
+    fontSize: '15px',
+    boxSizing: 'border-box',
+    background: 'white',
+  }
+
+  const label = {
+    fontWeight: 'bold',
     fontSize: '14px',
+    color: '#333',
+    display: 'block',
+    marginTop: '4px',
+  }
+
+  const section = {
+    background: '#f9f9f9',
+    border: '1px solid #eee',
+    borderRadius: '12px',
+    padding: '1.2rem',
+    marginBottom: '1.5rem',
+  }
+
+  const sectionTitle = {
+    marginTop: 0,
+    marginBottom: '1rem',
+    fontSize: '16px',
+    color: '#1a1a2e',
+    borderBottom: '2px solid #eee',
+    paddingBottom: '8px',
   }
 
   return (
-    <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <Link href="/" style={{ color: '#0070f3' }}>← Back to Dashboard</Link>
-      <h1 style={{ marginTop: '1rem' }}>👥 Tenant List</h1>
-      <p style={{ color: 'gray' }}>{tenants.length} active tenant(s)</p>
+    <main style={{ padding: '2rem', maxWidth: '700px', margin: '0 auto', fontFamily: 'sans-serif', background: '#f4f6fb', minHeight: '100vh' }}>
+
+      <a href="/" style={{ color: '#0070f3', fontSize: '14px' }}>← Back to Dashboard</a>
+
+      <div style={{ background: '#1a1a2e', borderRadius: '12px', padding: '1rem 1.5rem', margin: '1rem 0 1.5rem', color: 'white' }}>
+        <h1 style={{ margin: 0, fontSize: '22px' }}>🏠 Add New Tenant</h1>
+        <p style={{ margin: '4px 0 0', color: '#aaa', fontSize: '13px' }}>Fill all details carefully. All info can be edited later.</p>
+      </div>
+
+      {/* House Owner Selection — FIRST */}
+      <div style={{ ...section, borderColor: '#c9a84c', background: '#fffbf0' }}>
+        <h2 style={{ ...sectionTitle, borderColor: '#ffd54f' }}>🏠 House Owner (घरधनी) *</h2>
+        <p style={{ color: '#888', fontSize: '13px', marginBottom: '1rem', marginTop: '-0.5rem' }}>
+          Select house owner first — this will show only the rooms of that building
+        </p>
+
+        <label style={label}>Select House Owner (घरधनी छान्नुस्) *</label>
+        <select style={input} name="house_owner" value={form.house_owner} onChange={handleChange}>
+          <option value="">-- Select House Owner --</option>
+          <option value="Yubaraj Timilsina">Yubaraj Timilsina — Building A</option>
+          <option value="Krishna Timsena">Krishna Timsena — Building B (Handled by Tej Narayan Timilsina)</option>
+        </select>
+
+        {form.house_owner && (
+          <div style={{ background: '#e5ffe5', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#060', fontWeight: '600' }}>
+            ✅ {form.house_owner === 'Yubaraj Timilsina'
+              ? 'Building A rooms will be shown below'
+              : 'Building B rooms will be shown below (Handled by Tej Narayan Timilsina)'}
+          </div>
+        )}
+      </div>
+
+      {/* Personal Info */}
+      <div style={section}>
+        <h2 style={sectionTitle}>👤 Personal Information / व्यक्तिगत जानकारी</h2>
+
+        <label style={label}>Full Name (पूरा नाम) *</label>
+        <input style={input} name="full_name" value={form.full_name} onChange={handleChange} placeholder="e.g. Ram Bahadur Thapa" />
+
+        <label style={label}>Father's Name (बुबाको नाम)</label>
+        <input style={input} name="father_name" value={form.father_name} onChange={handleChange} placeholder="e.g. Hari Bahadur Thapa" />
+
+        <label style={label}>Grandfather's Name (हजुरबुबाको नाम)</label>
+        <input style={input} name="grandfather_name" value={form.grandfather_name} onChange={handleChange} placeholder="e.g. Kalu Bahadur Thapa" />
+
+        <label style={label}>Profession (पेशा)</label>
+        <input style={input} name="profession" value={form.profession} onChange={handleChange} placeholder="e.g. Teacher, Business, Student, Labour" />
+
+        <label style={label}>Citizenship ID / National ID (नागरिकता नम्बर)</label>
+        <input style={input} name="citizenship_id" value={form.citizenship_id} onChange={handleChange} placeholder="e.g. 12-34-56-78901" />
+      </div>
+
+      {/* Contact Info */}
+      <div style={section}>
+        <h2 style={sectionTitle}>📞 Contact Information / सम्पर्क जानकारी</h2>
+
+        <label style={label}>Phone Number (फोन नम्बर)</label>
+        <input style={input} name="phone" value={form.phone} onChange={handleChange} placeholder="e.g. 9841234567" />
+
+        <label style={label}>Email Address (इमेल) — optional</label>
+        <input style={input} name="email" value={form.email} onChange={handleChange} placeholder="e.g. ram@gmail.com" />
+
+        <label style={label}>Temporary Address (अस्थायी ठेगाना)</label>
+        <input style={input} name="temporary_address" value={form.temporary_address} onChange={handleChange} placeholder="e.g. Kathmandu-10, Baneshwor" />
+
+        <label style={label}>Permanent Address (स्थायी ठेगाना)</label>
+        <input style={input} name="permanent_address" value={form.permanent_address} onChange={handleChange} placeholder="e.g. Sindhupalchok-5, Melamchi" />
+      </div>
+
+      {/* Family Members */}
+      <div style={{ ...section, borderColor: '#aad4ff', background: '#f0f8ff' }}>
+        <h2 style={{ ...sectionTitle, borderColor: '#cce4ff' }}>👨‍👩‍👧‍👦 People in Room / कोठामा बस्नेहरू</h2>
+
+        <label style={label}>Number of People in Room (कोठामा बस्नेको संख्या) *</label>
+        <input style={input} type="number" name="number_of_people" value={form.number_of_people} onChange={handleChange} min="1" placeholder="e.g. 4" />
+
+        <label style={label}>Details of Each Person (प्रत्येक व्यक्तिको विवरण)</label>
+        <p style={{ color: '#888', fontSize: '12px', marginBottom: '6px' }}>
+          Write name and relation of every person living in the room.<br />
+          कोठामा बस्ने हरेक व्यक्तिको नाम र नाता लेख्नुस्।
+        </p>
+        <textarea
+          style={{ ...input, resize: 'vertical', lineHeight: '1.8', minHeight: '120px' }}
+          name="family_members"
+          value={form.family_members || ''}
+          onChange={handleChange}
+          placeholder={
+            '1. [Name] — Self / आफै (Head of family / परिवारको मुख्य व्यक्ति)\n' +
+            '2. [Name] — Wife / श्रीमती\n' +
+            '3. [Name] — Son / छोरा\n' +
+            '4. [Name] — Daughter / छोरी\n' +
+            '5. [Name] — Father / बुबा\n' +
+            '6. [Name] — Mother / आमा\n' +
+            '(Add all people / सबै व्यक्ति लेख्नुस्)'
+          }
+        />
+      </div>
+
+      {/* Emergency Contact */}
+      <div style={{ ...section, borderColor: '#ffaaaa', background: '#fff8f8' }}>
+        <h2 style={{ ...sectionTitle, borderColor: '#ffcccc' }}>🚨 Emergency Contact / आपतकालीन सम्पर्क</h2>
+        <p style={{ color: '#888', fontSize: '13px', marginBottom: '1rem', marginTop: '-0.5rem' }}>
+          Family member to contact in emergency — not living in the room
+        </p>
+
+        <label style={label}>Name (नाम)</label>
+        <input style={input} name="emergency_contact_name" value={form.emergency_contact_name} onChange={handleChange} placeholder="e.g. Hari Bahadur Thapa" />
+
+        <label style={label}>Relation (नाता)</label>
+        <input style={input} name="emergency_contact_relation" value={form.emergency_contact_relation} onChange={handleChange} placeholder="e.g. Father, Mother, Brother, Uncle" />
+
+        <label style={label}>Phone Number (फोन नम्बर)</label>
+        <input style={input} name="emergency_contact_phone" value={form.emergency_contact_phone} onChange={handleChange} placeholder="e.g. 9851234567" />
+      </div>
+
+      {/* Office Contact */}
+      <div style={{ ...section, borderColor: '#aaaaff', background: '#f8f8ff' }}>
+        <h2 style={{ ...sectionTitle, borderColor: '#ccccff' }}>🏢 Office / Workplace — optional</h2>
+        <p style={{ color: '#888', fontSize: '13px', marginBottom: '1rem', marginTop: '-0.5rem' }}>
+          Only if tenant is employed somewhere
+        </p>
+
+        <label style={label}>Office / Company Name (कार्यालयको नाम)</label>
+        <input style={input} name="office_name" value={form.office_name} onChange={handleChange} placeholder="e.g. ABC School, XYZ Company" />
+
+        <label style={label}>Contact Person (सम्पर्क व्यक्ति)</label>
+        <input style={input} name="office_contact_person" value={form.office_contact_person} onChange={handleChange} placeholder="e.g. Principal, Manager, Supervisor" />
+
+        <label style={label}>Office Phone (फोन)</label>
+        <input style={input} name="office_contact_phone" value={form.office_contact_phone} onChange={handleChange} placeholder="e.g. 01-4567890" />
+      </div>
+
+      {/* Room Info */}
+      <div style={{ ...section, borderColor: '#1a1a2e', background: '#f4f6fb' }}>
+        <h2 style={{ ...sectionTitle, borderColor: '#1a1a2e' }}>🏠 Room and Lease / कोठा र सम्झौता</h2>
+
+        {!form.house_owner && (
+          <div style={{ background: '#fff8e1', border: '1px solid #ffd54f', borderRadius: '8px', padding: '10px', marginBottom: '1rem', fontSize: '13px', color: '#888' }}>
+            ⚠️ Please select House Owner above first — then rooms will appear here
+          </div>
+        )}
+
+        <label style={label}>Select Room (कोठा छान्नुस्) *</label>
+        <select style={input} name="room_id" value={form.room_id} onChange={handleChange} disabled={!form.house_owner}>
+          <option value="">
+            {form.house_owner ? '-- Select a vacant room --' : '-- Select House Owner first --'}
+          </option>
+          {rooms.map(room => (
+            <option key={room.id} value={room.id}>
+              {getRoomType(room.room_type)} {room.room_number} — Floor {room.floor}
+            </option>
+          ))}
+        </select>
+
+        <label style={label}>Agreed Rent Amount — Rs. (सहमत भाडा रकम) *</label>
+        <input
+          style={{ ...input, fontSize: '18px', fontWeight: 'bold', border: '2px solid #1a1a2e' }}
+          type="number"
+          name="rent_amount"
+          value={form.rent_amount}
+          onChange={handleChange}
+          placeholder="Type exact agreed rent e.g. 7677"
+          min="0"
+        />
+        <p style={{ color: '#888', fontSize: '12px', marginTop: '-10px', marginBottom: '14px' }}>
+          Enter the actual agreed rent — any amount is fine
+        </p>
+
+        <label style={label}>Lease Start Date (सम्झौता सुरु मिति)</label>
+        <input style={input} type="date" name="lease_start" value={form.lease_start} onChange={handleChange} />
+
+        <label style={label}>Lease End Date (सम्झौता सकिने मिति)</label>
+        <input style={input} type="date" name="lease_end" value={form.lease_end} onChange={handleChange} />
+
+        <label style={label}>Advance Amount — Rs. (अग्रिम रकम)</label>
+        <input style={input} type="number" name="advance_amount" value={form.advance_amount} onChange={handleChange} placeholder="Enter advance amount — 0 if none" min="0" />
+      </div>
 
       {message && (
-        <p style={{
-          padding: '10px',
-          borderRadius: '6px',
+        <div style={{
+          padding: '12px',
+          borderRadius: '8px',
           background: message.includes('Error') ? '#ffe5e5' : '#e5ffe5',
           color: message.includes('Error') ? '#c00' : '#060',
-          marginBottom: '1rem'
-        }}>{message}</p>
+          marginBottom: '1rem',
+          fontWeight: '600',
+        }}>
+          {message.includes('Error') ? '❌ ' : '✅ '}{message}
+        </div>
       )}
 
-      {tenants.map(tenant => (
-        <div key={tenant.id} style={{ background: '#f9f9f9', border: '1px solid #eee', borderRadius: '10px', padding: '1rem', marginBottom: '1rem' }}>
-          {editing?.id === tenant.id ? (
-            <>
-              <h3 style={{ marginTop: 0 }}>✏️ Editing: {tenant.full_name}</h3>
-              <label>Full Name</label>
-              <input style={input} name="full_name" value={editing.full_name} onChange={handleEditChange} />
-              <label>Father's Name</label>
-              <input style={input} name="father_name" value={editing.father_name || ''} onChange={handleEditChange} />
-              <label>Grandfather's Name</label>
-              <input style={input} name="grandfather_name" value={editing.grandfather_name || ''} onChange={handleEditChange} />
-              <label>Phone</label>
-              <input style={input} name="phone" value={editing.phone || ''} onChange={handleEditChange} />
-              <label>Email</label>
-              <input style={input} name="email" value={editing.email || ''} onChange={handleEditChange} />
-              <label>Profession</label>
-              <input style={input} name="profession" value={editing.profession || ''} onChange={handleEditChange} />
-              <label>Citizenship ID</label>
-              <input style={input} name="citizenship_id" value={editing.citizenship_id || ''} onChange={handleEditChange} />
-              <label>Temporary Address</label>
-              <input style={input} name="temporary_address" value={editing.temporary_address || ''} onChange={handleEditChange} />
-              <label>Permanent Address</label>
-              <input style={input} name="permanent_address" value={editing.permanent_address || ''} onChange={handleEditChange} />
-              <label>Number of People</label>
-              <input style={input} type="number" name="number_of_people" value={editing.number_of_people || 1} onChange={handleEditChange} />
-              <label>Advance Amount</label>
-              <input style={input} type="number" name="advance_amount" value={editing.advance_amount || 0} onChange={handleEditChange} />
-              <label>Family Members Details</label>
-              <textarea style={{ ...input, resize: 'vertical', minHeight: '80px' }} name="family_members" value={editing.family_members || ''} onChange={handleEditChange} placeholder="1. Name — Relation&#10;2. Name — Relation" />
-              <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
-                <button onClick={saveEdit} style={{ background: '#0070f3', color: 'white', padding: '8px 20px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-                  Save Changes
-                </button>
-                <button onClick={() => setEditing(null)} style={{ background: '#eee', padding: '8px 20px', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-                  Cancel
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <div>
-                  <h3 style={{ margin: 0 }}>{tenant.full_name}</h3>
-                  <p style={{ color: 'gray', margin: '4px 0', fontSize: '14px' }}>Room {tenant.room_id} — {tenant.phone}</p>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => startEdit(tenant)} style={{ background: '#0070f3', color: 'white', padding: '6px 14px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
-                    ✏️ Edit
-                  </button>
-                  <button onClick={() => deactivateTenant(tenant.id)} style={{ background: '#ff4444', color: 'white', padding: '6px 14px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
-                    🚪 Remove
-                  </button>
-                </div>
-              </div>
-              <div style={{ marginTop: '8px', fontSize: '14px', color: '#555' }}>
-                <p style={{ margin: '2px 0' }}>👨 Father: {tenant.father_name || '—'} | Grandfather: {tenant.grandfather_name || '—'}</p>
-                <p style={{ margin: '2px 0' }}>💼 Profession: {tenant.profession || '—'}</p>
-                <p style={{ margin: '2px 0' }}>🪪 Citizenship: {tenant.citizenship_id || '—'}</p>
-                <p style={{ margin: '2px 0' }}>📍 Temporary: {tenant.temporary_address || '—'}</p>
-                <p style={{ margin: '2px 0' }}>🏡 Permanent: {tenant.permanent_address || '—'}</p>
-                <p style={{ margin: '2px 0' }}>👥 People in room: {tenant.number_of_people || 1}</p>
-                {tenant.family_members && (
-                  <div style={{ background: '#f4f6fb', borderRadius: '6px', padding: '6px 10px', marginTop: '4px', fontSize: '12px', color: '#555' }}>
-                    <strong>Family Members:</strong><br/>
-                    <span style={{ whiteSpace: 'pre-line' }}>{tenant.family_members}</span>
-                  </div>
-                )}
-                <p style={{ margin: '2px 0' }}>💰 Advance: Rs. {tenant.advance_amount || 0}</p>
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+      <button
+        onClick={handleSubmit}
+        style={{
+          background: '#1a1a2e',
+          color: 'white',
+          padding: '14px 32px',
+          border: 'none',
+          borderRadius: '10px',
+          fontSize: '16px',
+          cursor: 'pointer',
+          width: '100%',
+          fontWeight: '700',
+          marginBottom: '2rem',
+        }}
+      >
+        ✅ Save Tenant Information / भाडावालाको जानकारी सेभ गर्नुस्
+      </button>
+
+      <p style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <a href="/" style={{ color: '#0070f3' }}>← Back to Dashboard</a>
+      </p>
+
     </main>
   )
 }
