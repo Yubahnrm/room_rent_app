@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
         <LanguageProvider>
           <div style={{ background: 'linear-gradient(135deg,#2c1810,#4a2c0a,#1a1a2e)', padding: '1.2rem', textAlign: 'center', borderBottom: '3px solid #c9a84c' }}>
             <div style={{ fontSize: '40px', color: '#c9a84c', marginBottom: '4px' }}>ॐ</div>
-            <div style={{ color: '#c9a84c', fontSize: '22px', fontWeight: 'bold', letterSpacing: '3px', marginBottom: '4px' }}>अतिथि देवो भव</div>
+            <div style={{ color: '#c9a84c', fontSize: '22px', fontWeight: 'bold', letterSpacing: '3px', marginBottom: '4px' }}>अतिथि देवो भव:</div>
             <div style={{ color: '#e8d5a3', fontSize: '12px', fontStyle: 'italic', marginBottom: '2px' }}>The Guest is God — Treat every soul as divine</div>
             <div style={{ color: '#b8a070', fontSize: '12px', marginBottom: '10px' }}>अतिथिलाई भगवान् सरह सम्मान गर्नुहोस्</div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>

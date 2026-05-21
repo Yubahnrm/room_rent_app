@@ -254,7 +254,7 @@ export default function AddTenant() {
         <select style={input} name="room_owner_name" value={form.room_owner_name} onChange={handleChange}>
           <option value="">-- Select Owner --</option>
           <option value="Yubaraj Timilsina">Yubaraj Timilsina (Building A)</option>
-          <option value="Tej Narayan Timilsina">Tej Narayan Timilsina (Building B — handled by Yubaraj)</option>
+          <option value="Krishna Timsena">Krishna Timsena (Building B — handled by Tej Narayan Timilsina)</option>
         </select>
         <p style={{ color: '#888', fontSize: '12px', marginTop: '-10px', marginBottom: '12px' }}>
           Building A → Yubaraj | Building B → Tej Narayan Timilsina (managed by Yubaraj)
