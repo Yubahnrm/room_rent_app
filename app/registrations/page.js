@@ -41,7 +41,7 @@ export default function Registrations() {
     return 'Room'
   }
 
-  function buildMessage(reg, roomNum) {
+  function buildMessage(reg) {
     return 'नमस्ते ' + reg.full_name + ' जी! 🙏\n\n' +
       'तपाईंको कोठा दर्ता सफलतापूर्वक भयो।\n' +
       'अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!\n\n' +
@@ -49,26 +49,34 @@ export default function Registrations() {
       '──────────────────\n' +
       '👤 नाम: ' + reg.full_name + '\n' +
       '👨 बुबाको नाम: ' + (reg.father_name || '—') + '\n' +
+      '👴 हजुरबुबाको नाम: ' + (reg.grandfather_name || '—') + '\n' +
       '📞 फोन: ' + (reg.phone || '—') + '\n' +
+      '💼 पेशा: ' + (reg.profession || '—') + '\n' +
+      '🪪 नागरिकता: ' + (reg.citizenship_id || '—') + '\n' +
+      '📍 अस्थायी ठेगाना: ' + (reg.temporary_address || '—') + '\n' +
+      '🏡 स्थायी ठेगाना: ' + (reg.permanent_address || '—') + '\n' +
+      '👥 कोठामा बस्नेको संख्या: ' + (reg.number_of_people || 1) + '\n' +
+      (reg.family_members ? '👨‍👩‍👧‍👦 परिवारका सदस्यहरू:\n' + reg.family_members + '\n' : '') +
+      '──────────────────\n' +
       '🏠 घरधनी: Yubaraj Timilsina\n' +
-      '🛏️ कोठा नम्बर: ' + roomNum + '\n' +
-      '💰 मासिक भाडा: Rs. ' + rentAmount + '\n' +
-      '💵 अग्रिम रकम: Rs. ' + (advanceAmount || 0) + '\n' +
-      '📅 सम्झौता सुरु: ' + (leaseStart || '—') + '\n' +
-      '📅 सम्झौता सकिने: ' + (leaseEnd || '—') + '\n' +
+      '🛏️ कोठा नम्बर: ' + (reg.approvedRoomNumber || '—') + '\n' +
+      '💰 मासिक भाडा: Rs. ' + (reg.approvedRent || '—') + '\n' +
+      '💵 अग्रिम रकम: Rs. ' + (reg.approvedAdvance || 0) + '\n' +
+      '📅 सम्झौता सुरु: ' + (reg.approvedLeaseStart || '—') + '\n' +
+      '📅 सम्झौता सकिने: ' + (reg.approvedLeaseEnd || '—') + '\n' +
       '──────────────────\n\n' +
       'कृपया माथिको विवरण जाँच गर्नुस्।\n' +
       '✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।\n' +
       '❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।\n\n' +
-      'घरका नियमहरू:\n' +
+      'उजुरी वा प्रश्न भए यहाँ लेख्नुस्:\n' +
       'https://room-rent-app-ecru.vercel.app/noticeboard\n\n' +
-      '— युबराज तिमिल्सिना (HNRM परिवार) 🙏'
+      '— युबराज तिमिल्सिना (HNRM परिवार) 🙏\n' +
+      'www.yubarajtimilsina.com.np'
   }
 
   function sendWhatsApp() {
     if (!approvedTenant) return
-    const room = rooms.find(r => r.id === Number(roomId))
-    const msg = encodeURIComponent(buildMessage(approvedTenant, room ? room.room_number : roomId))
+    const msg = encodeURIComponent(buildMessage(approvedTenant))
     const phone = approvedTenant.phone ? approvedTenant.phone.replace(/^0/, '977') : ''
     const link = phone
       ? 'https://wa.me/' + phone + '?text=' + msg
@@ -82,9 +90,8 @@ export default function Registrations() {
       alert('This tenant has no email address saved.')
       return
     }
-    const room = rooms.find(r => r.id === Number(roomId))
-    const msg = buildMessage(approvedTenant, room ? room.room_number : roomId)
-    const subject = encodeURIComponent('कोठा दर्ता पुष्टि — Room ' + (room ? room.room_number : roomId) + ' — HNRM Family')
+    const msg = buildMessage(approvedTenant)
+    const subject = encodeURIComponent('कोठा दर्ता पुष्टि — Room ' + (approvedTenant.approvedRoomNumber || '—') + ' — HNRM Family')
     const body = encodeURIComponent(msg)
     window.open('mailto:' + approvedTenant.email + '?subject=' + subject + '&body=' + body, '_blank')
   }
@@ -130,7 +137,15 @@ export default function Registrations() {
     await supabase.from('rooms').update({ is_occupied: true }).eq('id', Number(roomId))
     await supabase.from('tenant_registrations').update({ status: 'approved' }).eq('id', selected.id)
 
-    setApprovedTenant(selected)
+    const approvedRoom = rooms.find(r => r.id === Number(roomId))
+    setApprovedTenant({
+      ...selected,
+      approvedRoomNumber: approvedRoom ? approvedRoom.room_number : roomId,
+      approvedRent: rentAmount,
+      approvedAdvance: advanceAmount || 0,
+      approvedLeaseStart: leaseStart || '—',
+      approvedLeaseEnd: leaseEnd || '—',
+    })
     setMessage(selected.full_name + ' approved successfully! Now send confirmation via WhatsApp or Email below.')
     setSelected(null)
     setRoomId('')
