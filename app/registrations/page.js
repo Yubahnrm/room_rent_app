@@ -138,6 +138,10 @@ export default function Registrations() {
     await supabase.from('tenant_registrations').update({ status: 'approved' }).eq('id', selected.id)
 
     const approvedRoom = rooms.find(r => r.id === Number(roomId))
+    setTimeout(() => {
+      const el = document.getElementById('send-confirmation')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 300)
     setApprovedTenant({
       ...selected,
       approvedRoomNumber: approvedRoom ? approvedRoom.room_number : roomId,
@@ -204,7 +208,7 @@ export default function Registrations() {
 
       {/* Send Confirmation Buttons */}
       {approvedTenant && (
-        <div style={{ background: '#fff8e1', border: '2px solid #ffd54f', borderRadius: '12px', padding: '1.2rem', marginBottom: '1.5rem' }}>
+        <div id="send-confirmation" style={{ background: '#fff8e1', border: '2px solid #ffd54f', borderRadius: '12px', padding: '1.2rem', marginBottom: '1.5rem' }}>
           <h3 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '15px' }}>
             📤 Send Confirmation to {approvedTenant.full_name}
           </h3>

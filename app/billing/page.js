@@ -17,6 +17,8 @@ export default function Billing() {
     rent_amount: 0,
     electricity_units: 0,
     electricity_rate: 17,
+    meter_previous: '',
+    meter_current: '',
     water_charge: 0,
     dustbin_charge: 100,
     damage_charge: 0,
@@ -183,11 +185,55 @@ const totalBill =
             <label style={label}>Rent Amount — Rs. (भाडा)</label>
             <input style={input} type="number" name="rent_amount" value={bill.rent_amount} onChange={handleBillChange} />
 
-            <label style={label}>Electricity Units Used (बिजुली युनिट)</label>
-            <input style={input} type="number" name="electricity_units" value={bill.electricity_units} onChange={handleBillChange} placeholder="e.g. 45" />
+            <div style={{ background: '#f0f8ff', borderRadius: '8px', padding: '10px', marginBottom: '12px', border: '1px solid #cce4ff' }}>
+              <div style={{ fontWeight: '700', fontSize: '13px', color: '#1a1a2e', marginBottom: '8px' }}>⚡ Meter Reading Method (मिटर रिडिङ)</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div>
+                  <label style={{ ...label, fontSize: '12px' }}>Previous Reading (अघिल्लो)</label>
+                  <input style={{ ...input, marginBottom: '4px' }} type="number" name="meter_previous" value={bill.meter_previous || ''} onChange={e => {
+                    const prev = Number(e.target.value)
+                    const curr = Number(bill.meter_current || 0)
+                    const used = curr > prev ? curr - prev : 0
+                    setBill({ ...bill, meter_previous: e.target.value, electricity_units: used })
+                  }} placeholder="e.g. 2345" />
+                </div>
+                <div>
+                  <label style={{ ...label, fontSize: '12px' }}>Current Reading (हालको)</label>
+                  <input style={{ ...input, marginBottom: '4px' }} type="number" name="meter_current" value={bill.meter_current || ''} onChange={e => {
+                    const curr = Number(e.target.value)
+                    const prev = Number(bill.meter_previous || 0)
+                    const used = curr > prev ? curr - prev : 0
+                    setBill({ ...bill, meter_current: e.target.value, electricity_units: used })
+                  }} placeholder="e.g. 2367" />
+                </div>
+              </div>
+              {bill.meter_previous && bill.meter_current && (
+                <div style={{ background: '#1a1a2e', color: 'white', borderRadius: '6px', padding: '6px 10px', fontSize: '12px', marginTop: '4px' }}>
+                  Units used this month: <strong>{Number(bill.meter_current) - Number(bill.meter_previous)} units</strong>
+                </div>
+              )}
+            </div>
+
+            <label style={label}>Electricity Units Used (बिजुली युनिट) — auto calculated above</label>
+            <input style={{ ...input, background: '#f0f0f0' }} type="number" name="electricity_units" value={bill.electricity_units} onChange={handleBillChange} placeholder="e.g. 45" />
+            <p style={{ color: '#888', fontSize: '11px', marginTop: '-10px', marginBottom: '8px' }}>
+              Nepali: १=1, २=2, ३=3, ४=4, ५=5, ६=6, ७=7, ८=8, ९=9, ०=0
+            </p>
 
             <label style={label}>Electricity Rate per Unit — Rs. (प्रति युनिट दर)</label>
             <input style={input} type="number" name="electricity_rate" value={bill.electricity_rate} onChange={handleBillChange} />
+            <p style={{ color: '#888', fontSize: '11px', marginTop: '-10px', marginBottom: '8px' }}>
+              Current rate: Rs. {bill.electricity_rate} per unit — change if rate has changed this month
+            </p>
+            <p style={{ color: '#888', fontSize: '11px', marginTop: '-10px', marginBottom: '8px' }}>
+              Nepali: १=1, २=2, ३=3, ४=4, ५=5, ६=6, ७=7, ८=8, ९=9, ०=0
+            </p>
+
+            <label style={label}>Electricity Rate per Unit — Rs. (प्रति युनिट दर)</label>
+            <input style={input} type="number" name="electricity_rate" value={bill.electricity_rate} onChange={handleBillChange} />
+            <p style={{ color: '#888', fontSize: '11px', marginTop: '-10px', marginBottom: '8px' }}>
+              Current rate: Rs. {bill.electricity_rate} per unit — change if rate has changed this month
+            </p>
 
             <label style={label}>
               Electricity Charge (बिजुली शुल्क) = Rs. {electricityCharge}
