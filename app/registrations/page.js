@@ -15,6 +15,7 @@ export default function Registrations() {
   const [leaseStart, setLeaseStart] = useState('')
   const [leaseEnd, setLeaseEnd] = useState('')
   const [message, setMessage] = useState('')
+  const [approvedTenant, setApprovedTenant] = useState(null)
 
   useEffect(() => {
     fetchAll()
@@ -38,6 +39,56 @@ export default function Registrations() {
     if (type === 'shop') return '🏪 Shop'
     if (type === 'flat') return '🏠 Flat'
     return '🛏️ Room'
+  }
+
+  function buildMessage(reg, roomNum) {
+    return `नमस्ते ${reg.full_name} जी! 🙏
+
+तपाईंको कोठा दर्ता सफलतापूर्वक भयो।
+अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!
+
+तपाईंको विवरण:
+──────────────────
+👤 नाम: ${reg.full_name}
+👨 बुबाको नाम: ${reg.father_name || '—'}
+📞 फोन: ${reg.phone || '—'}
+🏠 घरधनी: Yubaraj Timilsina
+🛏️ कोठा नम्बर: ${roomNum}
+💰 मासिक भाडा: Rs. ${rentAmount}
+💵 अग्रिम रकम: Rs. ${advanceAmount || 0}
+📅 सम्झौता सुरु: ${leaseStart || '—'}
+📅 सम्झौता सकिने: ${leaseEnd || '—'}
+──────────────────
+
+कृपया माथिको विवरण जाँच गर्नुस्।
+✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।
+❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।
+
+घरका नियमहरू:
+https://room-rent-app-ecru.vercel.app/noticeboard
+
+— युबराज तिमिल्सिना (HNRM परिवार) 🙏`
+  }
+
+  function sendWhatsApp() {
+    if (!approvedTenant) return
+    const room = rooms.find(r => r.id === Number(roomId))
+    const msg = encodeURIComponent(buildMessage(approvedTenant, room?.room_number || roomId))
+    const phone = approvedTenant.phone ? approvedTenant.phone.replace(/^0/, '977') : ''
+    const link = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`
+    window.open(link, '_blank')
+  }
+
+  function sendEmail() {
+    if (!approvedTenant || !approvedTenant.email) {
+      alert('This tenant has no email address saved.')
+      return
+    }
+    const room = rooms.find(r => r.id === Number(roomId))
+    const msg = buildMessage(approvedTenant, room?.room_number || roomId)
+    const subject = encodeURIComponent(`कोठा दर्ता पुष्टि — Room ${room?.room_number || roomId} — HNRM Family`)
+    const body = encodeURIComponent(msg)
+    window.open(`mailto:${approvedTenant.email}?subject=${subject}&body=${body}`, '_blank')
   }
 
   async function handleApprove() {
@@ -84,7 +135,42 @@ export default function Registrations() {
     // Mark registration as approved
     await supabase.from('tenant_registrations').update({ status: 'approved' }).eq('id', selected.id)
 
-    setMessage(`${selected.full_name} approved and added as tenant successfully!`)
+    // Build WhatsApp confirmation message
+    const waMsg = encodeURIComponent(
+`नमस्ते ${selected.full_name} जी! 🙏
+
+तपाईंको कोठा दर्ता सफलतापूर्वक भयो।
+अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!
+
+तपाईंको विवरण हामीले भरेका छौं:
+──────────────────
+👤 नाम: ${selected.full_name}
+📞 फोन: ${selected.phone || '—'}
+🏠 घरधनी: Yubaraj Timilsina
+🛏️ कोठा नम्बर: ${rooms.find(r => r.id === Number(roomId))?.room_number || roomId}
+💰 मासिक भाडा: Rs. ${rentAmount}
+💵 अग्रिम रकम: Rs. ${advanceAmount || 0}
+📅 सम्झौता सुरु: ${leaseStart || '—'}
+📅 सम्झौता सकिने: ${leaseEnd || '—'}
+──────────────────
+
+कृपया माथिको विवरण जाँच गर्नुस्।
+✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।
+❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।
+
+घरका नियमहरू:
+https://room-rent-app-ecru.vercel.app/noticeboard
+
+— युबराज तिमिल्सिना (HNRM परिवार) 🙏`)
+
+    const waPhone = selected.phone ? selected.phone.replace(/^0/, '977') : ''
+    const waLink = waPhone
+      ? \`https://wa.me/\${waPhone}?text=\${waMsg}\`
+      : \`https://wa.me/?text=\${waMsg}\`
+
+    window.open(waLink, '_blank')
+    setApprovedTenant(selected)
+    setMessage(`${selected.full_name} approved successfully! Now send confirmation via WhatsApp or Email below.`)
     setSelected(null)
     setRoomId('')
     setRentAmount('')
@@ -137,6 +223,41 @@ export default function Registrations() {
       {message && (
         <div style={{ padding: '12px', borderRadius: '8px', background: message.includes('Error') ? '#ffe5e5' : '#e5ffe5', color: message.includes('Error') ? '#c00' : '#060', marginBottom: '1rem', fontWeight: '600' }}>
           {message.includes('Error') ? '❌ ' : '✅ '}{message}
+        </div>
+      )}
+
+      {approvedTenant && (
+        <div style={{ background: '#fff8e1', border: '2px solid #ffd54f', borderRadius: '12px', padding: '1.2rem', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '15px' }}>
+            📤 Send Confirmation to {approvedTenant.full_name}
+          </h3>
+          <p style={{ color: '#888', fontSize: '13px', margin: '0 0 1rem' }}>
+            Send the approved details to tenant so they can confirm everything is correct.
+            <br/>भाडावालालाई उनको विवरण पठाउनुस् ताकि उनले पुष्टि गर्न सकून्।
+          </p>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              onClick={sendWhatsApp}
+              style={{ background: '#25D366', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', flex: 1, minWidth: '180px' }}
+            >
+              📱 Send via WhatsApp
+            </button>
+            <button
+              onClick={sendEmail}
+              style={{ background: '#0070f3', color: 'white', padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', flex: 1, minWidth: '180px' }}
+            >
+              📧 Send via Email
+            </button>
+          </div>
+          <p style={{ color: '#aaa', fontSize: '11px', marginTop: '8px', margin: '8px 0 0' }}>
+            Phone: {approvedTenant.phone || '—'} | Email: {approvedTenant.email || 'No email saved'}
+          </p>
+          <button
+            onClick={() => setApprovedTenant(null)}
+            style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '12px', marginTop: '8px', textDecoration: 'underline' }}
+          >
+            Dismiss
+          </button>
         </div>
       )}
 
@@ -236,7 +357,7 @@ export default function Registrations() {
               <label style={label}>Lease End Date</label>
               <input style={input} type="date" value={leaseEnd} onChange={e => setLeaseEnd(e.target.value)} />
 
-              <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', flexWrap: 'wrap' }}>
                 <button
                   onClick={handleApprove}
                   style={{ background: '#22bb66', color: 'white', padding: '10px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', flex: 1 }}
