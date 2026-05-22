@@ -9,13 +9,13 @@ export default function Registrations() {
   const [rooms, setRooms] = useState([])
   const [buildings, setBuildings] = useState([])
   const [selected, setSelected] = useState(null)
+  const [approvedTenant, setApprovedTenant] = useState(null)
   const [roomId, setRoomId] = useState('')
   const [rentAmount, setRentAmount] = useState('')
   const [advanceAmount, setAdvanceAmount] = useState('')
   const [leaseStart, setLeaseStart] = useState('')
   const [leaseEnd, setLeaseEnd] = useState('')
   const [message, setMessage] = useState('')
-  const [approvedTenant, setApprovedTenant] = useState(null)
 
   useEffect(() => {
     fetchAll()
@@ -36,59 +36,57 @@ export default function Registrations() {
   }
 
   function getRoomType(type) {
-    if (type === 'shop') return '🏪 Shop'
-    if (type === 'flat') return '🏠 Flat'
-    return '🛏️ Room'
+    if (type === 'shop') return 'Shop'
+    if (type === 'flat') return 'Flat'
+    return 'Room'
   }
 
   function buildMessage(reg, roomNum) {
-    return `नमस्ते ${reg.full_name} जी! 🙏
-
-तपाईंको कोठा दर्ता सफलतापूर्वक भयो।
-अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!
-
-तपाईंको विवरण:
-──────────────────
-👤 नाम: ${reg.full_name}
-👨 बुबाको नाम: ${reg.father_name || '—'}
-📞 फोन: ${reg.phone || '—'}
-🏠 घरधनी: Yubaraj Timilsina
-🛏️ कोठा नम्बर: ${roomNum}
-💰 मासिक भाडा: Rs. ${rentAmount}
-💵 अग्रिम रकम: Rs. ${advanceAmount || 0}
-📅 सम्झौता सुरु: ${leaseStart || '—'}
-📅 सम्झौता सकिने: ${leaseEnd || '—'}
-──────────────────
-
-कृपया माथिको विवरण जाँच गर्नुस्।
-✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।
-❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।
-
-घरका नियमहरू:
-https://room-rent-app-ecru.vercel.app/noticeboard
-
-— युबराज तिमिल्सिना (HNRM परिवार) 🙏`
+    return 'नमस्ते ' + reg.full_name + ' जी! 🙏\n\n' +
+      'तपाईंको कोठा दर्ता सफलतापूर्वक भयो।\n' +
+      'अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!\n\n' +
+      'तपाईंको विवरण:\n' +
+      '──────────────────\n' +
+      '👤 नाम: ' + reg.full_name + '\n' +
+      '👨 बुबाको नाम: ' + (reg.father_name || '—') + '\n' +
+      '📞 फोन: ' + (reg.phone || '—') + '\n' +
+      '🏠 घरधनी: Yubaraj Timilsina\n' +
+      '🛏️ कोठा नम्बर: ' + roomNum + '\n' +
+      '💰 मासिक भाडा: Rs. ' + rentAmount + '\n' +
+      '💵 अग्रिम रकम: Rs. ' + (advanceAmount || 0) + '\n' +
+      '📅 सम्झौता सुरु: ' + (leaseStart || '—') + '\n' +
+      '📅 सम्झौता सकिने: ' + (leaseEnd || '—') + '\n' +
+      '──────────────────\n\n' +
+      'कृपया माथिको विवरण जाँच गर्नुस्।\n' +
+      '✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।\n' +
+      '❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।\n\n' +
+      'घरका नियमहरू:\n' +
+      'https://room-rent-app-ecru.vercel.app/noticeboard\n\n' +
+      '— युबराज तिमिल्सिना (HNRM परिवार) 🙏'
   }
 
   function sendWhatsApp() {
     if (!approvedTenant) return
     const room = rooms.find(r => r.id === Number(roomId))
-    const msg = encodeURIComponent(buildMessage(approvedTenant, room?.room_number || roomId))
+    const msg = encodeURIComponent(buildMessage(approvedTenant, room ? room.room_number : roomId))
     const phone = approvedTenant.phone ? approvedTenant.phone.replace(/^0/, '977') : ''
-    const link = phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`
+    const link = phone
+      ? 'https://wa.me/' + phone + '?text=' + msg
+      : 'https://wa.me/?text=' + msg
     window.open(link, '_blank')
   }
 
   function sendEmail() {
-    if (!approvedTenant || !approvedTenant.email) {
+    if (!approvedTenant) return
+    if (!approvedTenant.email) {
       alert('This tenant has no email address saved.')
       return
     }
     const room = rooms.find(r => r.id === Number(roomId))
-    const msg = buildMessage(approvedTenant, room?.room_number || roomId)
-    const subject = encodeURIComponent(`कोठा दर्ता पुष्टि — Room ${room?.room_number || roomId} — HNRM Family`)
+    const msg = buildMessage(approvedTenant, room ? room.room_number : roomId)
+    const subject = encodeURIComponent('कोठा दर्ता पुष्टि — Room ' + (room ? room.room_number : roomId) + ' — HNRM Family')
     const body = encodeURIComponent(msg)
-    window.open(`mailto:${approvedTenant.email}?subject=${subject}&body=${body}`, '_blank')
+    window.open('mailto:' + approvedTenant.email + '?subject=' + subject + '&body=' + body, '_blank')
   }
 
   async function handleApprove() {
@@ -97,7 +95,6 @@ https://room-rent-app-ecru.vercel.app/noticeboard
       return
     }
 
-    // Add to tenants table
     const { error } = await supabase.from('tenants').insert([{
       full_name: selected.full_name,
       father_name: selected.father_name,
@@ -109,6 +106,7 @@ https://room-rent-app-ecru.vercel.app/noticeboard
       temporary_address: selected.temporary_address,
       permanent_address: selected.permanent_address,
       number_of_people: selected.number_of_people,
+      family_members: selected.family_members,
       emergency_contact_name: selected.emergency_contact_name,
       emergency_contact_phone: selected.emergency_contact_phone,
       emergency_contact_relation: selected.emergency_contact_relation,
@@ -120,7 +118,7 @@ https://room-rent-app-ecru.vercel.app/noticeboard
       advance_amount: Number(advanceAmount) || 0,
       lease_start: leaseStart,
       lease_end: leaseEnd,
-      room_owner_name: 'Yubaraj',
+      room_owner_name: 'Yubaraj Timilsina',
       is_active: true,
     }])
 
@@ -129,48 +127,11 @@ https://room-rent-app-ecru.vercel.app/noticeboard
       return
     }
 
-    // Mark room as occupied
     await supabase.from('rooms').update({ is_occupied: true }).eq('id', Number(roomId))
-
-    // Mark registration as approved
     await supabase.from('tenant_registrations').update({ status: 'approved' }).eq('id', selected.id)
 
-    // Build WhatsApp confirmation message
-    const waMsg = encodeURIComponent(
-`नमस्ते ${selected.full_name} जी! 🙏
-
-तपाईंको कोठा दर्ता सफलतापूर्वक भयो।
-अतिथि देवो भव: — HNRM परिवारमा स्वागत छ!
-
-तपाईंको विवरण हामीले भरेका छौं:
-──────────────────
-👤 नाम: ${selected.full_name}
-📞 फोन: ${selected.phone || '—'}
-🏠 घरधनी: Yubaraj Timilsina
-🛏️ कोठा नम्बर: ${rooms.find(r => r.id === Number(roomId))?.room_number || roomId}
-💰 मासिक भाडा: Rs. ${rentAmount}
-💵 अग्रिम रकम: Rs. ${advanceAmount || 0}
-📅 सम्झौता सुरु: ${leaseStart || '—'}
-📅 सम्झौता सकिने: ${leaseEnd || '—'}
-──────────────────
-
-कृपया माथिको विवरण जाँच गर्नुस्।
-✅ सही छ भने "ठीक छ" लेखेर पठाउनुस्।
-❌ कुनै गल्ती छ भने सोही लेखेर पठाउनुस्।
-
-घरका नियमहरू:
-https://room-rent-app-ecru.vercel.app/noticeboard
-
-— युबराज तिमिल्सिना (HNRM परिवार) 🙏`)
-
-    const waPhone = selected.phone ? selected.phone.replace(/^0/, '977') : ''
-    const waLink = waPhone
-      ? \`https://wa.me/\${waPhone}?text=\${waMsg}\`
-      : \`https://wa.me/?text=\${waMsg}\`
-
-    window.open(waLink, '_blank')
     setApprovedTenant(selected)
-    setMessage(`${selected.full_name} approved successfully! Now send confirmation via WhatsApp or Email below.`)
+    setMessage(selected.full_name + ' approved successfully! Now send confirmation via WhatsApp or Email below.')
     setSelected(null)
     setRoomId('')
     setRentAmount('')
@@ -181,7 +142,7 @@ https://room-rent-app-ecru.vercel.app/noticeboard
   }
 
   async function handleReject(id, name) {
-    if (!confirm(`Reject registration from ${name}?`)) return
+    if (!confirm('Reject registration from ' + name + '?')) return
     await supabase.from('tenant_registrations').update({ status: 'rejected' }).eq('id', id)
     fetchAll()
   }
@@ -226,14 +187,15 @@ https://room-rent-app-ecru.vercel.app/noticeboard
         </div>
       )}
 
+      {/* Send Confirmation Buttons */}
       {approvedTenant && (
         <div style={{ background: '#fff8e1', border: '2px solid #ffd54f', borderRadius: '12px', padding: '1.2rem', marginBottom: '1.5rem' }}>
           <h3 style={{ margin: '0 0 0.5rem', color: '#1a1a2e', fontSize: '15px' }}>
             📤 Send Confirmation to {approvedTenant.full_name}
           </h3>
           <p style={{ color: '#888', fontSize: '13px', margin: '0 0 1rem' }}>
-            Send the approved details to tenant so they can confirm everything is correct.
-            <br/>भाडावालालाई उनको विवरण पठाउनुस् ताकि उनले पुष्टि गर्न सकून्।
+            Send approved details to tenant so they can confirm everything is correct.
+            भाडावालालाई उनको विवरण पठाउनुस् ताकि उनले पुष्टि गर्न सकून्।
           </p>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <button
@@ -249,13 +211,10 @@ https://room-rent-app-ecru.vercel.app/noticeboard
               📧 Send via Email
             </button>
           </div>
-          <p style={{ color: '#aaa', fontSize: '11px', marginTop: '8px', margin: '8px 0 0' }}>
+          <p style={{ color: '#aaa', fontSize: '11px', marginTop: '8px' }}>
             Phone: {approvedTenant.phone || '—'} | Email: {approvedTenant.email || 'No email saved'}
           </p>
-          <button
-            onClick={() => setApprovedTenant(null)}
-            style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '12px', marginTop: '8px', textDecoration: 'underline' }}
-          >
+          <button onClick={() => setApprovedTenant(null)} style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '12px', marginTop: '4px', textDecoration: 'underline' }}>
             Dismiss
           </button>
         </div>
@@ -286,7 +245,7 @@ https://room-rent-app-ecru.vercel.app/noticeboard
         </div>
       </div>
 
-      {/* Pending Registrations */}
+      {/* Pending */}
       <h2 style={{ color: '#1a1a2e', fontSize: '16px', marginBottom: '1rem' }}>⏳ Pending Registrations ({pending.length})</h2>
 
       {pending.length === 0 && (
@@ -304,27 +263,24 @@ https://room-rent-app-ecru.vercel.app/noticeboard
               <p style={{ color: '#888', fontSize: '13px', margin: '2px 0' }}>🪪 {reg.citizenship_id || '—'}</p>
               <p style={{ color: '#888', fontSize: '13px', margin: '2px 0' }}>📍 {reg.temporary_address || '—'}</p>
               <p style={{ color: '#888', fontSize: '13px', margin: '2px 0' }}>👨 Father: {reg.father_name || '—'} | Grandfather: {reg.grandfather_name || '—'}</p>
+              {reg.family_members && (
+                <div style={{ background: '#f4f6fb', borderRadius: '6px', padding: '6px 10px', marginTop: '4px', fontSize: '12px', color: '#555' }}>
+                  <strong>Family Members:</strong><br />
+                  <span style={{ whiteSpace: 'pre-line' }}>{reg.family_members}</span>
+                </div>
+              )}
               {reg.emergency_contact_name && <p style={{ color: '#c00', fontSize: '12px', margin: '2px 0' }}>🚨 Emergency: {reg.emergency_contact_name} ({reg.emergency_contact_relation}) — {reg.emergency_contact_phone}</p>}
               {reg.office_name && <p style={{ color: '#0070f3', fontSize: '12px', margin: '2px 0' }}>🏢 Office: {reg.office_name} — {reg.office_contact_person} — {reg.office_contact_phone}</p>}
               <p style={{ color: '#aaa', fontSize: '11px', margin: '4px 0 0' }}>Submitted: {new Date(reg.created_at).toLocaleDateString('en-GB')}</p>
             </div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => { setSelected(reg); setMessage('') }}
-                style={{ background: '#1a1a2e', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}
-              >
+              <button onClick={() => { setSelected(reg); setMessage('') }} style={{ background: '#1a1a2e', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>
                 ✅ Approve
               </button>
-              <button
-                onClick={() => handleReject(reg.id, reg.full_name)}
-                style={{ background: '#fff0f0', color: '#c00', padding: '8px 16px', border: '1px solid #ffaaaa', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}
-              >
+              <button onClick={() => handleReject(reg.id, reg.full_name)} style={{ background: '#fff0f0', color: '#c00', padding: '8px 16px', border: '1px solid #ffaaaa', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
                 ❌ Reject
               </button>
-              <button
-                onClick={() => handleDelete(reg.id, reg.full_name)}
-                style={{ background: '#f9f9f9', color: '#888', padding: '8px 16px', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}
-              >
+              <button onClick={() => handleDelete(reg.id)} style={{ background: '#f9f9f9', color: '#888', padding: '8px 16px', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
                 🗑️ Delete
               </button>
             </div>
@@ -357,17 +313,11 @@ https://room-rent-app-ecru.vercel.app/noticeboard
               <label style={label}>Lease End Date</label>
               <input style={input} type="date" value={leaseEnd} onChange={e => setLeaseEnd(e.target.value)} />
 
-              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', flexWrap: 'wrap' }}>
-                <button
-                  onClick={handleApprove}
-                  style={{ background: '#22bb66', color: 'white', padding: '10px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', flex: 1 }}
-                >
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+                <button onClick={handleApprove} style={{ background: '#22bb66', color: 'white', padding: '10px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', flex: 1 }}>
                   ✅ Confirm Approval
                 </button>
-                <button
-                  onClick={() => setSelected(null)}
-                  style={{ background: '#eee', color: '#555', padding: '10px 20px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
-                >
+                <button onClick={() => setSelected(null)} style={{ background: '#eee', color: '#555', padding: '10px 20px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
                   Cancel
                 </button>
               </div>
@@ -381,13 +331,18 @@ https://room-rent-app-ecru.vercel.app/noticeboard
         <>
           <h2 style={{ color: '#22bb66', fontSize: '16px', marginBottom: '1rem', marginTop: '2rem' }}>✅ Approved ({approved.length})</h2>
           {approved.map(reg => (
-            <div key={reg.id} style={{ background: '#f0fff4', border: '1px solid #ccffdd', borderRadius: '10px', padding: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div key={reg.id} style={{ background: '#f0fff4', border: '1px solid #ccffdd', borderRadius: '10px', padding: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <strong>{reg.full_name}</strong>
                 <span style={{ color: '#888', fontSize: '13px', marginLeft: '8px' }}>{reg.phone}</span>
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <span style={{ color: '#22bb66', fontSize: '13px', fontWeight: '600' }}>✅ Approved</span>
+                <button
+                  onClick={() => { setApprovedTenant(reg); setMessage('') }}
+                  style={{ background: '#25D366', color: 'white', padding: '5px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}
+                >
+                  📱 Resend WhatsApp
+                </button>
                 <button onClick={() => handleDelete(reg.id)} style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '16px' }}>🗑️</button>
               </div>
             </div>
