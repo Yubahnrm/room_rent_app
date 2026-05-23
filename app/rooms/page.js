@@ -1,30 +1,44 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
-export default function RoomsPage() {
+function RoomsContent() {
+  const searchParams = useSearchParams()
+  const buildingParam = searchParams.get('building')
+
   const [rooms, setRooms] = useState([])
   const [buildings, setBuildings] = useState([])
   const [filter, setFilter] = useState('all')
+  const [currentBuilding, setCurrentBuilding] = useState(null)
 
   useEffect(() => {
     fetchRooms()
-  }, [])
+  }, [buildingParam])
 
   async function fetchRooms() {
-    const { data: r } = await supabase.from('rooms').select('*').order('room_number')
     const { data: b } = await supabase.from('buildings').select('*')
-    setRooms(r || [])
     setBuildings(b || [])
-  }
 
-  function getBuildingName(building_id) {
-    const b = buildings.find(b => b.id === building_id)
-    return b ? b.name : ''
+    let query = supabase.from('rooms').select('*').order('room_number')
+    if (buildingParam) {
+      query = query.eq('building_id', Number(buildingParam))
+      const building = (b || []).find(bld => bld.id === Number(buildingParam))
+      setCurrentBuilding(building || null)
+    }
+
+    const { data: r } = await query
+    setRooms(r || [])
   }
 
   function getRoomIcon(type) {
+    if (type === 'shop') return '🏪'
+    if (type === 'flat') return '🏠'
+    return '🛏️'
+  }
+
+  function getRoomTypeLabel(type) {
     if (type === 'shop') return 'Shop'
     if (type === 'flat') return 'Flat'
     return 'Room'
@@ -45,9 +59,17 @@ export default function RoomsPage() {
     <main style={{ minHeight: '100vh', background: '#f4f6fb', fontFamily: 'sans-serif' }}>
 
       <div style={{ background: '#1a1a2e', padding: '1.5rem', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', margin: 0, fontSize: '22px' }}>Available Rooms - HNRM Family</h1>
-        <p style={{ color: '#aaa', margin: '4px 0 0', fontSize: '13px' }}>Browse our rooms and find your perfect home</p>
-        <p style={{ color: '#c9a84c', margin: '4px 0 0', fontSize: '13px' }}>{vacantCount} vacant unit(s) available now</p>
+        <h1 style={{ color: 'white', margin: 0, fontSize: '20px' }}>
+          {currentBuilding ? currentBuilding.name : 'Available Rooms'} — HNRM Family
+        </h1>
+        {currentBuilding && (
+          <p style={{ color: '#aaa', margin: '4px 0 0', fontSize: '12px' }}>
+            Owner: {currentBuilding.owner}
+          </p>
+        )}
+        <p style={{ color: '#c9a84c', margin: '4px 0 0', fontSize: '13px' }}>
+          {vacantCount} vacant unit(s) available now
+        </p>
       </div>
 
       <div style={{ padding: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
@@ -69,7 +91,7 @@ export default function RoomsPage() {
                   <img src={room.photo_url} alt={'Room ' + room.room_number} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ textAlign: 'center', color: '#c9a84c' }}>
-                    <div style={{ fontSize: '48px' }}>{room.room_type === 'shop' ? '🏪' : room.room_type === 'flat' ? '🏠' : '🛏️'}</div>
+                    <div style={{ fontSize: '48px' }}>{getRoomIcon(room.room_type)}</div>
                     <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>No photo yet</div>
                   </div>
                 )}
@@ -80,14 +102,18 @@ export default function RoomsPage() {
 
               <div style={{ padding: '1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <h3 style={{ margin: 0, fontSize: '16px', color: '#1a1a2e' }}>{getRoomIcon(room.room_type)} {room.room_number}</h3>
-                  <span style={{ background: '#f4f6fb', padding: '2px 8px', borderRadius: '8px', fontSize: '11px', color: '#555' }}>{room.floor} Floor</span>
+                  <h3 style={{ margin: 0, fontSize: '16px', color: '#1a1a2e' }}>
+                    {getRoomIcon(room.room_type)} {getRoomTypeLabel(room.room_type)} {room.room_number}
+                  </h3>
+                  <span style={{ background: '#f4f6fb', padding: '2px 8px', borderRadius: '8px', fontSize: '11px', color: '#555' }}>
+                    {room.floor} Floor
+                  </span>
                 </div>
 
-                <div style={{ color: '#888', fontSize: '12px', marginBottom: '8px' }}>{getBuildingName(room.building_id)}</div>
-
                 {room.description && (
-                  <p style={{ color: '#555', fontSize: '13px', marginBottom: '8px', lineHeight: '1.5' }}>{room.description}</p>
+                  <p style={{ color: '#555', fontSize: '13px', marginBottom: '8px', lineHeight: '1.5' }}>
+                    {room.description}
+                  </p>
                 )}
 
                 {!room.is_occupied && (
@@ -118,12 +144,20 @@ export default function RoomsPage() {
         )}
 
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '12px', color: '#aaa', paddingBottom: '2rem' }}>
-          <div style={{ color: '#c9a84c', fontSize: '16px', marginBottom: '4px' }}>HNRM Family</div>
-          <div>Human Nature Reality Movement</div>
+          <div style={{ color: '#c9a84c', fontSize: '16px', marginBottom: '4px' }}>ॐ अतिथि देवो भव:</div>
+          <div>HNRM Family — Human Nature Reality Movement</div>
           <a href="https://www.yubarajtimilsina.com.np" target="_blank" rel="noopener noreferrer" style={{ color: '#c9a84c' }}>www.yubarajtimilsina.com.np</a>
         </div>
 
       </div>
     </main>
+  )
+}
+
+export default function RoomsPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+      <RoomsContent />
+    </Suspense>
   )
 }
