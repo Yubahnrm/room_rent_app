@@ -108,21 +108,8 @@ const navBtn = {
           <p style={{ color: '#888', margin: '4px 0 0', fontSize: '13px' }}>{lang === 'np' ? 'दुवै भवनको पूरा विवरण' : 'Complete overview of both buildings'}</p>
         </div>
 
-        <div style={{ background: '#1a1a2e', borderRadius: '14px', padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ color: 'white', fontWeight: '700', fontSize: '16px' }}>📊 {lang === 'np' ? 'जम्मा सारांश' : 'Overview'}</div>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ textAlign: 'center', minWidth: '80px' }}>
-              <div style={{ color: 'white', fontSize: '24px', fontWeight: '700' }}>{rooms.length}</div>
-              <div style={{ color: '#aaa', fontSize: '11px' }}>{lang === 'np' ? 'जम्मा कोठा' : 'Total Units'}</div>
-            </div>
-            <div style={{ textAlign: 'center', minWidth: '80px' }}>
-              <div style={{ color: '#c9a84c', fontSize: '24px', fontWeight: '700' }}>{tenants.length}</div>
-              <div style={{ color: '#aaa', fontSize: '11px' }}>{lang === 'np' ? 'भाडावाला' : 'Tenants'}</div>
-            </div>
-          </div>
-        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: '1.5rem' }}>
-          {buildings.map(building => {
+          {buildings.sort((a, b) => a.id - b.id).map(building => {
             const stats = getBuildingStats(building.id)
             return (
               <div key={building.id} style={{ background: 'white', borderRadius: '14px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '2px solid #eee' }}>
@@ -147,19 +134,7 @@ const navBtn = {
                     <div style={{ fontSize: '22px', fontWeight: '700', color: '#f0a500' }}>{stats.buildingTenants.length}</div>
                     <div style={{ color: '#888', fontSize: '11px', marginTop: '2px' }}>{lang === 'np' ? 'भाडावाला' : 'Tenants'}</div>
                   </div>
-                  <div style={{ background: '#1a1a2e', borderRadius: '14px', padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ color: 'white', fontWeight: '700', fontSize: '16px' }}>📊 {lang === 'np' ? 'जम्मा सारांश' : 'Overview'}</div>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ textAlign: 'center', minWidth: '80px' }}>
-              <div style={{ color: 'white', fontSize: '24px', fontWeight: '700' }}>{rooms.length}</div>
-              <div style={{ color: '#aaa', fontSize: '11px' }}>{lang === 'np' ? 'जम्मा कोठा' : 'Total Units'}</div>
-            </div>
-            <div style={{ textAlign: 'center', minWidth: '80px' }}>
-              <div style={{ color: '#c9a84c', fontSize: '24px', fontWeight: '700' }}>{tenants.length}</div>
-              <div style={{ color: '#aaa', fontSize: '11px' }}>{lang === 'np' ? 'भाडावाला' : 'Tenants'}</div>
-            </div>
-          </div>
-        </div>
+                  
                 </div>
 
                 {stats.unpaidBills > 0 && (

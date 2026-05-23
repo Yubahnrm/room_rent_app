@@ -348,7 +348,12 @@ export default function Registrations() {
       {/* Approved */}
       {approved.length > 0 && (
         <>
-          <h2 style={{ color: '#22bb66', fontSize: '16px', marginBottom: '1rem', marginTop: '2rem' }}>✅ Approved ({approved.length})</h2>
+          <h2 style={{ color: '#22bb66', fontSize: '16px', marginBottom: '1rem', marginTop: '2rem' }}>
+            ✅ Approved ({approved.length}) — 
+            <a href="/tenants/list" style={{ color: '#0070f3', fontSize: '13px', marginLeft: '8px' }}>
+              View in Tenant List →
+            </a>
+          </h2>
           {approved.map(reg => (
             <div key={reg.id} style={{ background: '#f0fff4', border: '1px solid #ccffdd', borderRadius: '10px', padding: '1rem', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
               <div>
