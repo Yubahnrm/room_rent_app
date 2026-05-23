@@ -23,7 +23,8 @@ export default function Registrations() {
 
   async function fetchAll() {
     const { data: r } = await supabase.from('tenant_registrations').select('*').order('created_at', { ascending: false })
-    const { data: rooms } = await supabase.from('rooms').select('*').eq('is_occupied', false)
+    const { data: allRooms } = await supabase.from('rooms').select('*').eq('is_occupied', false)
+    const rooms = allRooms || []
     const { data: b } = await supabase.from('buildings').select('*')
     setRegistrations(r || [])
     setRooms(rooms || [])
@@ -313,11 +314,13 @@ export default function Registrations() {
               <label style={label}>Select Room *</label>
               <select style={input} value={roomId} onChange={e => setRoomId(e.target.value)}>
                 <option value="">-- Select vacant room --</option>
-                {rooms.map(room => (
-                  <option key={room.id} value={room.id}>
-                    {getBuildingName(room.building_id)} — {getRoomType(room.room_type)} {room.room_number}
-                  </option>
-                ))}
+                {rooms
+                  .filter(room => selected?.building_id ? room.building_id === selected.building_id : true)
+                  .map(room => (
+                    <option key={room.id} value={room.id}>
+                      {getBuildingName(room.building_id)} — {getRoomType(room.room_type)} {room.room_number}
+                    </option>
+                  ))}
               </select>
 
               <label style={label}>Agreed Rent Amount — Rs. *</label>
