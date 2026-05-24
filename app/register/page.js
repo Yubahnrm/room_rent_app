@@ -144,19 +144,7 @@ function RegisterContent() {
               </label>
             </div>
             <button
-              onClick={() => {
-        setAgreed(true)
-        setTimeout(() => {
-          window.scrollTo(0, 0)
-          document.body.scrollTop = 0
-          document.documentElement.scrollTop = 0
-        }, 50)
-        setTimeout(() => {
-          window.scrollTo(0, 0)
-          document.body.scrollTop = 0
-          document.documentElement.scrollTop = 0
-        }, 300)
-      }}
+              onClick={() => setAgreed(true)}
               disabled={!agreed}
               style={{ background: agreed ? '#1a1a2e' : '#ccc', color: 'white', padding: '12px 32px', border: 'none', borderRadius: '10px', fontSize: '15px', cursor: agreed ? 'pointer' : 'not-allowed', width: '100%', fontWeight: '700' }}
             >
@@ -167,7 +155,10 @@ function RegisterContent() {
 
         {agreed && (
           <>
-            <div style={{ background: '#e5ffe5', borderRadius: '10px', padding: '10px 14px', marginBottom: '1.5rem', fontSize: '13px', color: '#060', fontWeight: '600' }}>
+            <div
+              ref={el => { if (el) { setTimeout(() => { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); window.scrollTo(0, 0) }, 100) } }}
+              style={{ background: '#e5ffe5', borderRadius: '10px', padding: '10px 14px', marginBottom: '1.5rem', fontSize: '13px', color: '#060', fontWeight: '600' }}
+            >
               ✅ You have agreed to house rules. Please fill your details below.
             </div>
 
