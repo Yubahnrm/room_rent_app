@@ -126,7 +126,7 @@ export default function Registrations() {
       advance_amount: Number(advanceAmount) || 0,
       lease_start: leaseStart,
       lease_end: leaseEnd,
-      room_owner_name: 'Yubaraj Timilsina',
+      room_owner_name: selected.building_id === 2 ? 'Krishna Timsena' : 'Yubaraj Timilsina',
       is_active: true,
     }])
 
