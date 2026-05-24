@@ -144,7 +144,14 @@ function RegisterContent() {
               </label>
             </div>
             <button
-              onClick={() => { setAgreed(true); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+              onClick={() => {
+        setAgreed(true)
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          document.body.scrollTop = 0
+          document.documentElement.scrollTop = 0
+        }, 100)
+      }}
               disabled={!agreed}
               style={{ background: agreed ? '#1a1a2e' : '#ccc', color: 'white', padding: '12px 32px', border: 'none', borderRadius: '10px', fontSize: '15px', cursor: agreed ? 'pointer' : 'not-allowed', width: '100%', fontWeight: '700' }}
             >
