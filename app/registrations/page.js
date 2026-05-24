@@ -243,10 +243,19 @@ export default function Registrations() {
       {/* Share Link */}
       <div style={{ background: '#1a1a2e', borderRadius: '12px', padding: '1rem 1.5rem', marginBottom: '1.5rem' }}>
         <div style={{ color: 'white', fontWeight: '700', marginBottom: '6px' }}>📤 Share this link with new tenants:</div>
-        <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 12px', color: '#c9a84c', fontSize: '13px', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-          https://room-rent-app-ecru.vercel.app/register
+        <div style={{ marginBottom: '8px' }}>
+          <div style={{ color: '#aaa', fontSize: '11px', marginBottom: '4px' }}>Building A (Yubaraj):</div>
+          <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 12px', color: '#c9a84c', fontSize: '12px', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+            https://room-rent-app-ecru.vercel.app/register?building=1
+          </div>
         </div>
-        <div style={{ color: '#888', fontSize: '12px', marginTop: '6px' }}>Tenant opens this link on their phone and fills their own details</div>
+        <div>
+          <div style={{ color: '#aaa', fontSize: '11px', marginBottom: '4px' }}>Building B (Krishna Timsena):</div>
+          <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 12px', color: '#c9a84c', fontSize: '12px', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+            https://room-rent-app-ecru.vercel.app/register?building=2
+          </div>
+        </div>
+        <div style={{ color: '#888', fontSize: '12px', marginTop: '8px' }}>Send the correct building link to each tenant</div>
       </div>
 
       {/* Stats */}
@@ -315,10 +324,13 @@ export default function Registrations() {
               <select style={input} value={roomId} onChange={e => setRoomId(e.target.value)}>
                 <option value="">-- Select vacant room --</option>
                 {rooms
-                  .filter(room => selected?.building_id ? room.building_id === selected.building_id : true)
+                  .filter(room => {
+                    if (selected?.building_id) return room.building_id === Number(selected.building_id)
+                    return true
+                  })
                   .map(room => (
                     <option key={room.id} value={room.id}>
-                      {getBuildingName(room.building_id)} — {getRoomType(room.room_type)} {room.room_number}
+                      {getRoomType(room.room_type)} {room.room_number} — Floor {room.floor}
                     </option>
                   ))}
               </select>
