@@ -22,9 +22,8 @@ export default function Start() {
     return rooms.filter(r => r.building_id === buildingId && !r.is_occupied).length
   }
 
-  function getBuildingPhoto(buildingId) {
-    const buildingRooms = rooms.filter(r => r.building_id === buildingId && r.photo_url)
-    return buildingRooms.length > 0 ? buildingRooms[0].photo_url : null
+  function getBuildingPhoto(building) {
+    return building.photo_url || null
   }
 
   return (
@@ -44,7 +43,7 @@ export default function Start() {
         </p>
 
         {buildings.sort((a, b) => a.id - b.id).map(building => {
-          const photo = getBuildingPhoto(building.id)
+          const photo = getBuildingPhoto(building)
           const vacant = getVacantCount(building.id)
           const isA = building.id === 1
 
