@@ -73,7 +73,7 @@ export default function Start() {
                 overflow: 'hidden',
               }}>
                 {photo ? (
-                  <img src={photo} alt={building.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={photo} alt={building.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.display='none'} />
                 ) : (
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '56px' }}>🏢</div>
