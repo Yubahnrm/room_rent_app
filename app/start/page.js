@@ -2,11 +2,12 @@
 
 const BUILDING_A_PHOTO = 'https://iknfxnmrhxntfzxukaiz.supabase.co/storage/v1/object/public/room-photos/building%20A.jpg'
 const BUILDING_B_PHOTO = 'https://iknfxnmrhxntfzxukaiz.supabase.co/storage/v1/object/public/room-photos/building%20B.jpg'
-const POKHARA_PHOTO = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Phewa_lake_Pokhara.jpg/1280px-Phewa_lake_Pokhara.jpg'
+const POKHARA_PHOTO = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80'
 
 export default function Start() {
   return (
     <main style={{ minHeight: '100vh', background: '#f4f6fb', fontFamily: 'sans-serif' }}>
+      <style>{`#main-spiritual-header { display: none !important; }`}</style>
 
       {/* Header with Pokhara Machhapuchhre background */}
       <div style={{
