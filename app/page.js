@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Link from 'next/link'
 import { useLang } from './providers'
+import SpiritualHeader from './spiritualheader'
 
 export default function Home() {
   const { t, toggleLanguage, lang } = useLang()

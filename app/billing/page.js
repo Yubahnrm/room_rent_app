@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import SpiritualHeader from '../spiritualheader'
 
 export default function Billing() {
   const [tenants, setTenants] = useState([])
@@ -136,7 +137,8 @@ const totalBill =
 
   return (
     <main style={{ padding: '2rem', maxWidth: '700px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <h1>🧾 Monthly Billing</h1>
+      <SpiritualHeader />
+      <h1 style={{ marginTop: '1rem' }}>🧾 Monthly Billing</h1>
       <p style={{ color: 'gray' }}>Select tenant and fill monthly charges</p>
 
       {/* Select Tenant */}
