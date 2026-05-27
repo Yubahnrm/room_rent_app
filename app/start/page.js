@@ -7,7 +7,7 @@ const POKHARA_PHOTO = 'https://images.unsplash.com/photo-1506905925346-21bda4d32
 export default function Start() {
   return (
     <main style={{ minHeight: '100vh', background: '#f4f6fb', fontFamily: 'sans-serif' }}>
-      <style>{`#main-spiritual-header { display: none !important; }`}</style>
+      <style dangerouslySetInnerHTML={{__html: '#main-spiritual-header { display: none !important; }'}} />
 
       {/* Header with Pokhara Machhapuchhre background */}
       <div style={{
